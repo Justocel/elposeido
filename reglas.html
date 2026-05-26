@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>El Poseído — Reglas</title>
+<style>
+  :root {
+    --bg: #f5f1ea;
+    --ink: #2a2420;
+    --accent: #8b1e1e;
+    --muted: #6b5d52;
+    --line: #d4c9b8;
+    --card-bg: #fff;
+    --gold: #b08a3c;
+    --green: #4a6b3a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+  }
+  .wrap {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 40px 32px 80px;
+  }
+  header {
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 16px;
+    margin-bottom: 32px;
+  }
+  h1 {
+    font-size: 2.6rem;
+    margin: 0 0 4px;
+    letter-spacing: 1px;
+    color: var(--accent);
+  }
+  .subtitle { color: var(--muted); font-style: italic; }
+  h2 {
+    font-size: 1.6rem;
+    color: var(--accent);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 6px;
+    margin-top: 44px;
+    letter-spacing: 0.5px;
+  }
+  h3 {
+    font-size: 1.1rem;
+    color: var(--ink);
+    margin: 22px 0 8px;
+    letter-spacing: 0.3px;
+  }
+  p { margin: 8px 0; }
+  ul, ol { margin: 8px 0; padding-left: 24px; }
+  li { margin: 4px 0; }
+  strong { color: var(--ink); }
+  em { color: var(--accent); font-style: italic; }
+
+  .pitch {
+    background: var(--card-bg);
+    border-left: 4px solid var(--accent);
+    padding: 18px 22px;
+    margin: 16px 0 28px;
+    font-size: 1.05rem;
+  }
+
+  .role-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin: 16px 0;
+  }
+  .role-card {
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 16px 18px;
+  }
+  .role-card .tag {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .role-card .name {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+  }
+  .role-card.priest .name { color: var(--gold); }
+  .role-card.sick .name { color: var(--green); }
+  .role-card.possessed .name { color: var(--accent); }
+  .role-card .what {
+    font-size: 0.92rem;
+    color: var(--muted);
+    font-style: italic;
+    margin-bottom: 10px;
+  }
+  .role-card ul { font-size: 0.92rem; padding-left: 20px; }
+
+  .steps {
+    counter-reset: step;
+    padding-left: 0;
+    list-style: none;
+    margin: 16px 0;
+  }
+  .steps > li {
+    counter-increment: step;
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px 18px 14px 56px;
+    margin-bottom: 10px;
+    position: relative;
+  }
+  .steps > li::before {
+    content: counter(step);
+    position: absolute;
+    left: 16px; top: 14px;
+    width: 28px; height: 28px;
+    background: var(--accent); color: white;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: bold; font-size: 0.95rem;
+    font-family: Georgia, serif;
+  }
+  .steps .step-title {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .win-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 16px 0;
+  }
+  .win-card {
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 16px 18px;
+  }
+  .win-card.priest-win {
+    border-left: 4px solid var(--gold);
+  }
+  .win-card.possessed-win {
+    border-left: 4px solid var(--accent);
+  }
+  .win-card .who {
+    font-weight: bold; font-size: 1.05rem; margin-bottom: 6px;
+  }
+  .win-card.priest-win .who { color: var(--gold); }
+  .win-card.possessed-win .who { color: var(--accent); }
+
+  .callout {
+    background: #faf4e3;
+    border: 1px solid var(--gold);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 16px 0;
+  }
+  .callout .label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--gold);
+    margin-bottom: 6px;
+    font-weight: bold;
+  }
+
+  .example {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin: 12px 0;
+  }
+  .example .turn {
+    margin: 10px 0;
+    padding-left: 14px;
+    border-left: 2px solid var(--line);
+  }
+  .example .player {
+    font-weight: bold;
+    color: var(--ink);
+  }
+  .example .card {
+    display: inline-block;
+    background: #ebdfbf;
+    color: var(--ink);
+    padding: 1px 8px;
+    border-radius: 3px;
+    font-size: 0.92rem;
+    margin: 0 2px;
+  }
+  .example .quote {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 0.95rem;
+  }
+  .example .priest-think {
+    background: #faf4e3;
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin: 10px 0;
+    font-style: italic;
+    color: #6b5326;
+    font-size: 0.95rem;
+  }
+
+  .tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .tips-card {
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px 18px;
+  }
+  .tips-card h4 {
+    margin: 0 0 8px;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+  }
+  .tips-card.priest h4 { color: var(--gold); }
+  .tips-card.sick h4 { color: var(--green); }
+  .tips-card.possessed h4 { color: var(--accent); }
+  .tips-card ul { font-size: 0.92rem; padding-left: 18px; }
+  .tips-card li { margin: 5px 0; }
+
+  .faq dt {
+    font-weight: bold;
+    color: var(--ink);
+    margin-top: 14px;
+  }
+  .faq dd {
+    margin: 4px 0 12px;
+    color: var(--muted);
+    padding-left: 0;
+  }
+
+  .concepts-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    background: var(--card-bg);
+    font-size: 0.95rem;
+  }
+  .concepts-table thead th {
+    background: var(--accent); color: white;
+    text-align: left; padding: 10px 14px;
+    font-weight: normal; font-size: 0.82rem;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+  .concepts-table tbody td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  .concepts-table tbody tr:nth-child(even) { background: #faf6ee; }
+  .concepts-table td:first-child {
+    font-weight: bold;
+    color: var(--accent);
+    width: 32%;
+  }
+
+  nav.toc {
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px 20px;
+    margin: 8px 0 24px;
+    font-size: 0.95rem;
+  }
+  nav.toc ul { list-style: none; padding-left: 0; margin: 4px 0; columns: 2; }
+  nav.toc li { margin: 3px 0; break-inside: avoid; }
+  nav.toc a { color: var(--accent); text-decoration: none; }
+  nav.toc a:hover { text-decoration: underline; }
+
+  footer {
+    text-align: center;
+    margin-top: 48px;
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+
+  @media print {
+    body { background: white; }
+    .wrap { padding: 20px; }
+    h2 { break-after: avoid; }
+    .role-card, .steps > li, .win-card, .callout, .example, .tips-card {
+      break-inside: avoid;
+    }
+    nav.toc { display: none; }
+  }
+  @media (max-width: 600px) {
+    .win-grid { grid-template-columns: 1fr; }
+    nav.toc ul { columns: 1; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>El Poseído</h1>
+  <div class="subtitle">Reglas del juego</div>
+</header>
+
+<nav class="toc">
+  <strong>En esta página:</strong>
+  <ul>
+    <li><a href="#pitch">El juego en 30 segundos</a></li>
+    <li><a href="#materiales">Antes de empezar</a></li>
+    <li><a href="#roles">Los tres roles</a></li>
+    <li><a href="#ronda">Cómo se juega una semana</a></li>
+    <li><a href="#ganar">Cómo gana cada bando</a></li>
+    <li><a href="#estatuilla">La Estatuilla</a></li>
+    <li><a href="#espectadores">Salvados = espectadores</a></li>
+    <li><a href="#ejemplo">Ejemplo de una semana</a></li>
+    <li><a href="#consejos">Consejos por rol</a></li>
+    <li><a href="#faq">Preguntas frecuentes</a></li>
+    <li><a href="#conceptos">Conceptos integrados</a></li>
+  </ul>
+</nav>
+
+<section id="pitch">
+  <h2>El juego en 30 segundos</h2>
+  <div class="pitch">
+    Un <em>sacerdote</em> tiene dos meses para salvar a un grupo de enfermos terminales, pero entre ellos se esconde un <em>poseído</em> que se hace pasar por enfermo. Cada semana se revela una palabra: todos la ven, salvo el poseído, que ve una palabra <em>apenas distinta</em>. Cada enfermo elige una carta del mazo que asocie con su palabra; el poseído tiene que fingir empatía con una palabra que no es la real. El sacerdote escucha la discusión y decide a quién salvar. Si salva a un enfermo: bien. Si salva al poseído: pierde la partida.
+  </div>
+</section>
+
+<section id="materiales">
+  <h2>Antes de empezar</h2>
+  <ul>
+    <li><strong>4 a 8 jugadores</strong>.</li>
+    <li><strong>Un mazo de 64 cartas de papel</strong> con palabras evocadoras (ver <a href="cartas.html">cartas.html</a>).</li>
+    <li><strong>Una computadora o celular</strong> con la app del juego (<a href="index.html">index.html</a>) que se va pasando entre los jugadores.</li>
+    <li>Una mesa, sillas alrededor, y silencio cuando alguien está viendo su palabra.</li>
+  </ul>
+</section>
+
+<section id="roles">
+  <h2>Los tres roles</h2>
+  <p>La app asigna los roles en secreto al inicio. Cada jugador ve solo el suyo.</p>
+  <div class="role-grid">
+    <div class="role-card priest">
+      <div class="tag">1 jugador</div>
+      <div class="name">Sacerdote</div>
+      <div class="what">El que decide.</div>
+      <ul>
+        <li>Ve la palabra real cada semana.</li>
+        <li>No toma cartas ni juega.</li>
+        <li>Escucha la discusión en silencio.</li>
+        <li>Elige a un jugador para salvar cada semana.</li>
+      </ul>
+    </div>
+    <div class="role-card sick">
+      <div class="tag">2 a 6 jugadores</div>
+      <div class="name">Enfermo terminal</div>
+      <div class="what">El que sufre y necesita ser salvado.</div>
+      <ul>
+        <li>Ve la palabra real cada semana.</li>
+        <li>Toma 5 cartas y elige una que asocie.</li>
+        <li>Tiene que demostrar empatía verdadera con la palabra.</li>
+        <li>Si lo salvan, queda a salvo y pasa a espectador.</li>
+      </ul>
+    </div>
+    <div class="role-card possessed">
+      <div class="tag">1 jugador</div>
+      <div class="name">Poseído</div>
+      <div class="what">El infiltrado.</div>
+      <ul>
+        <li>Ve una palabra <em>relacionada pero distinta</em> a la real.</li>
+        <li>Sabe que es el poseído.</li>
+        <li>Toma 5 cartas y elige una para hacerse pasar por enfermo.</li>
+        <li>Gana si el sacerdote lo salva una sola vez.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="ronda">
+  <h2>Cómo se juega una semana</h2>
+  <ol class="steps">
+    <li>
+      <span class="step-title">Reveal de palabra (privado)</span>
+      La app va pasando entre los jugadores. Cada uno ve, en secreto, su rol y la palabra de esta semana. El sacerdote y los enfermos ven la <em>misma</em> palabra (por ejemplo <strong>playa</strong>). El poseído ve una <em>palabra-vecina</em> (por ejemplo <strong>desierto</strong>): comparte atributos con la real pero no es igual.
+    </li>
+    <li>
+      <span class="step-title">Reparto de cartas</span>
+      Se mezcla el mazo de papel. Cada jugador <em>menos el sacerdote</em> toma 5 cartas. Cada uno mira su mano en secreto y elige <em>una</em> carta que asocie con la palabra que vio.
+    </li>
+    <li>
+      <span class="step-title">Revelación simultánea</span>
+      Cuando todos eligieron, dan vuelta su carta al mismo tiempo. Las demás cartas de la mano vuelven al mazo (no se descartan, vuelven a entrar el próximo reparto).
+    </li>
+    <li>
+      <span class="step-title">Discusión</span>
+      Los jugadores pueden hablar libremente: justificar su carta, sospechar de otros, defenderse. El sacerdote <em>escucha en silencio</em> buscando empatía verdadera detrás de las palabras — el poseído carece de ella y se delata si pone atención.
+    </li>
+    <li>
+      <span class="step-title">Decisión del sacerdote</span>
+      El sacerdote elige a <em>un</em> jugador para salvar. Si era un enfermo: se enciende una vela con su nombre, queda a salvo y se sienta como espectador. Si era el poseído: la partida termina y el poseído gana.
+    </li>
+  </ol>
+</section>
+
+<section id="ganar">
+  <h2>Cómo gana cada bando</h2>
+  <div class="win-grid">
+    <div class="win-card priest-win">
+      <div class="who">Sacerdote + enfermos</div>
+      <p>Ganan si el sacerdote logra salvar a <em>todos</em> los enfermos terminales sin caer ni una vez en la trampa del poseído.</p>
+    </div>
+    <div class="win-card possessed-win">
+      <div class="who">Poseído</div>
+      <p>Gana si el sacerdote lo elige para salvar en <em>cualquier</em> semana de la partida. Una sola vez basta.</p>
+    </div>
+  </div>
+  <p style="color:var(--muted); font-size:0.95rem;">No hay empate posible. La partida termina cuando: (a) están todos los enfermos a salvo, o (b) el sacerdote salva al poseído.</p>
+</section>
+
+<section id="estatuilla">
+  <h2>La Estatuilla — habilidad del sacerdote</h2>
+  <div class="callout">
+    <div class="label">Una vez por partida</div>
+    <p>Si en una semana el sacerdote no se decide — ninguna carta lo convence lo suficiente — puede <strong>usar la Estatuilla</strong>. Esa semana <em>nadie es salvado</em>: la partida pasa a la siguiente semana sin avanzar ni perder. Es un acto ceremonial: la estatuilla queda inclinada en reverencia y la decisión se posterga.</p>
+    <p style="margin-top:8px;"><strong>Solo se puede usar una vez en toda la partida.</strong> Después, el sacerdote tiene que elegir sí o sí.</p>
+  </div>
+</section>
+
+<section id="espectadores">
+  <h2>Salvados = espectadores</h2>
+  <p>Cuando el sacerdote salva a un enfermo, ese jugador <strong>no participa más activamente</strong>:</p>
+  <ul>
+    <li>No ve la palabra de las próximas semanas.</li>
+    <li>No toma cartas.</li>
+    <li>Está presente pero queda como espectador silencioso. No participa de la discusión.</li>
+    <li>No puede volver a ser elegido (ya está a salvo).</li>
+  </ul>
+  <p>Esto hace que el poseído tenga cada semana menos enfermos detrás de los cuales esconderse, y que las semanas finales sean las más tensas.</p>
+</section>
+
+<section id="ejemplo">
+  <h2>Ejemplo de una semana</h2>
+  <p>Cinco jugadores: <strong>Ana</strong> (sacerdote), <strong>Bruno</strong>, <strong>Carla</strong>, <strong>Diego</strong> y <strong>Eva</strong>. Sin que nadie lo sepa, Eva es el poseído.</p>
+
+  <div class="example">
+    <p><strong>Reveal privado:</strong></p>
+    <div class="turn"><span class="player">Ana</span> ve: <em>sacerdote</em>, palabra <strong>playa</strong>.</div>
+    <div class="turn"><span class="player">Bruno, Carla, Diego</span> ven: <em>enfermo terminal</em>, palabra <strong>playa</strong>.</div>
+    <div class="turn"><span class="player">Eva</span> ve: <em>poseído</em>, palabra <strong>desierto</strong>.</div>
+
+    <p style="margin-top:14px;"><strong>Cartas elegidas y discusión:</strong></p>
+    <div class="turn"><span class="player">Bruno</span> juega <span class="card">ola</span> — <span class="quote">"me recordó al ruido del mar."</span></div>
+    <div class="turn"><span class="player">Carla</span> juega <span class="card">agua</span> — <span class="quote">"era lo más obvio para mi palabra."</span></div>
+    <div class="turn"><span class="player">Diego</span> juega <span class="card">sol</span> — <span class="quote">"asocié con vacaciones, infancia."</span></div>
+    <div class="turn"><span class="player">Eva</span> juega <span class="card">calor</span> — <span class="quote">"porque es lo que sentís ahí."</span></div>
+
+    <div class="priest-think">
+      <strong>Ana piensa:</strong> Ola, agua, sol — los tres me llevan a la playa con detalles específicos (sonido del mar, infancia). El calor de Eva podría aplicar a muchas cosas: una sauna, un desierto, un día de verano. Su justificación es vaga. Sospecho de Eva, pero no la salvo a ella. Decido salvar a Bruno, que dio el detalle más específico (el ruido del mar).
+    </div>
+
+    <p><strong>Resultado:</strong> Ana salva a Bruno. Era un enfermo terminal. Se enciende una vela con su nombre. La próxima semana, Bruno es espectador.</p>
+  </div>
+</section>
+
+<section id="consejos">
+  <h2>Consejos por rol</h2>
+  <div class="tips-grid">
+    <div class="tips-card priest">
+      <h4>Si sos el sacerdote</h4>
+      <ul>
+        <li>Buscá detalles específicos en las justificaciones: el poseído tiende a hablar en abstracto.</li>
+        <li>Las cartas "comodín" (vacío, sombra, brillante) le sirven al poseído. Prestá atención a quién juega genéricos.</li>
+        <li>Cruzá información entre semanas: si un jugador se mantuvo vago varias veces, eso pesa.</li>
+        <li>La Estatuilla es para emergencias. Si nadie te convence, mejor postergar que arriesgar.</li>
+        <li>Escuchá en silencio. Hablar te delata frente al poseído y le da pistas de qué buscás.</li>
+      </ul>
+    </div>
+    <div class="tips-card sick">
+      <h4>Si sos enfermo terminal</h4>
+      <ul>
+        <li>Sé específico en tu carta y en tu justificación. Tu objetivo es que el sacerdote confíe en vos.</li>
+        <li>Pero cuidado: ser demasiado obvio le revela la palabra real al poseído.</li>
+        <li>Acusar al poseído también legitima: si notás algo raro en otra carta, comentalo.</li>
+        <li>No te calles si tenés una observación útil — el sacerdote te escucha.</li>
+      </ul>
+    </div>
+    <div class="tips-card possessed">
+      <h4>Si sos el poseído</h4>
+      <ul>
+        <li>Escuchá <em>primero</em>. Las primeras justificaciones de los demás te van revelando la palabra real.</li>
+        <li>Elegí cartas con doble lectura: que puedan funcionar tanto para tu palabra como para la posible real.</li>
+        <li>Justifica con emociones, no con detalles concretos. Lo concreto se contradice; lo abstracto se sostiene.</li>
+        <li>No seas ni el más vocal ni el más callado. Pasar desapercibido es ganar tiempo.</li>
+        <li>Cuando puedas, sembrá duda sobre otro jugador. Una buena acusación tuya quita presión.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <h2>Preguntas frecuentes</h2>
+  <dl class="faq">
+    <dt>¿Qué pasa si dos jugadores eligen la misma carta?</dt>
+    <dd>Nada raro: puede pasar y no rompe el juego. La discusión sigue normal. Si justifican distinto, el sacerdote tiene más para leer.</dd>
+
+    <dt>¿El sacerdote puede hablar durante la discusión?</dt>
+    <dd>Tiene que escuchar en silencio. Si necesita una aclaración mínima (por ejemplo "¿podés repetir?") está bien, pero no debería opinar ni debatir. Cualquier comentario suyo es información para el poseído.</dd>
+
+    <dt>¿Puedo mostrar mi carta a alguien antes del reveal?</dt>
+    <dd>No. Todas las cartas se revelan simultáneamente.</dd>
+
+    <dt>¿Si no me convence nadie y ya usé la Estatuilla, igual tengo que elegir?</dt>
+    <dd>Sí. La incomodidad de elegir sin certeza es parte del juego.</dd>
+
+    <dt>¿El sacerdote sabe quién es el poseído al principio?</dt>
+    <dd>No. Solo sabe que hay <em>uno</em> entre los demás.</dd>
+
+    <dt>¿Pueden los enfermos ponerse de acuerdo antes de jugar?</dt>
+    <dd>Mecánicamente nada lo impide, pero arruina la dinámica social y le quita gracia al juego. Mejor jugar honestamente y dejar que la discusión espontánea revele todo.</dd>
+
+    <dt>¿Y si la palabra de la semana es muy difícil para todos?</dt>
+    <dd>Está bien. La dificultad es pareja: si los enfermos también tienen problemas, el sacerdote lo va a notar y puede usar la Estatuilla.</dd>
+
+    <dt>¿Puedo pasar y no jugar carta?</dt>
+    <dd>No. Si sos enfermo o poseído, tenés que jugar una carta cada semana.</dd>
+
+    <dt>¿Cuánto dura una partida?</dt>
+    <dd>Entre 15 y 35 minutos según cantidad de jugadores. Una partida tiene tantas semanas como enfermos haya (más una si se usa la Estatuilla).</dd>
+  </dl>
+</section>
+
+<section id="conceptos">
+  <h2>Conceptos integrados</h2>
+  <p>El juego fue diseñado a partir de una lista de conceptos. Cada uno está integrado en una parte distinta del juego:</p>
+  <table class="concepts-table">
+    <thead>
+      <tr><th>Concepto</th><th>Dónde aparece</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Sacerdote</td><td>Rol principal: el único que decide.</td></tr>
+      <tr><td>Enfermo terminal</td><td>Rol de los demás jugadores legítimos.</td></tr>
+      <tr><td>Lluvia</td><td>Ambientación animada en la pantalla de inicio (líneas diagonales en movimiento).</td></tr>
+      <tr><td>Falta de empatía</td><td>Mecánica central: es lo que delata al poseído. El sacerdote escucha buscando empatía verdadera.</td></tr>
+      <tr><td>Quedan 2 meses para irme</td><td>Premisa narrativa: el sacerdote tiene tiempo limitado. Las rondas se llaman "semanas".</td></tr>
+      <tr><td>Inteligencia</td><td>Atributo del sacerdote: solo su inteligencia lo separa de la derrota.</td></tr>
+      <tr><td>Lección de anatomía del Dr. Tulp (Rembrandt)</td><td>Imagen mental que estructura la mesa: un grupo rodeando a un enfermo, escrutando para encontrar la verdad. Referencia en la pantalla de intro.</td></tr>
+      <tr><td>Cuadro de las dos estatuas (una inclinada)</td><td>Habilidad <em>Estatuilla</em>: cuando el sacerdote la usa, aparece una estatua inclinada en reverencia y la semana pasa sin decisión.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<footer>
+  El Poseído · <a href="index.html">jugar</a> · <a href="cartas.html">cartas y pares</a>
+</footer>
+
+</div>
+</body>
+</html>

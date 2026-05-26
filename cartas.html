@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>El Poseído — Cartas y Pares</title>
+<style>
+  :root {
+    --bg: #f5f1ea;
+    --ink: #2a2420;
+    --accent: #8b1e1e;
+    --muted: #6b5d52;
+    --line: #d4c9b8;
+    --card-bg: #fff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  .wrap {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 32px 80px;
+  }
+  header {
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 16px;
+    margin-bottom: 32px;
+  }
+  h1 {
+    font-size: 2.4rem;
+    margin: 0 0 4px;
+    letter-spacing: 1px;
+    color: var(--accent);
+  }
+  .subtitle {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 1rem;
+  }
+  h2 {
+    font-size: 1.6rem;
+    color: var(--accent);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 6px;
+    margin-top: 48px;
+  }
+  h3 {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    margin: 20px 0 8px;
+  }
+  .summary {
+    background: var(--card-bg);
+    border-left: 4px solid var(--accent);
+    padding: 14px 18px;
+    margin: 16px 0 24px;
+    font-size: 0.95rem;
+  }
+
+  /* ====== Cartas ====== */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 6px 18px;
+    margin-bottom: 24px;
+  }
+  .card-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 10px;
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    font-size: 1.05rem;
+  }
+  .card-item .box {
+    width: 14px;
+    height: 14px;
+    border: 1.5px solid var(--ink);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  /* ====== Pares ====== */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card-bg);
+    margin-top: 8px;
+    font-size: 0.98rem;
+  }
+  thead th {
+    background: var(--accent);
+    color: #fff;
+    text-align: left;
+    padding: 10px 14px;
+    font-weight: normal;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-size: 0.82rem;
+  }
+  tbody td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  tbody tr:nth-child(even) { background: #faf6ee; }
+  td.real { font-weight: bold; color: var(--ink); }
+  td.poseido { font-style: italic; color: #5a3a3a; }
+  td.shared { color: var(--muted); font-size: 0.9rem; }
+  td.num { color: var(--muted); width: 32px; text-align: right; font-variant-numeric: tabular-nums; }
+
+  .counter {
+    display: inline-block;
+    background: var(--accent);
+    color: #fff;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  @media print {
+    body { background: white; }
+    .wrap { padding: 20px; }
+    .card-item, table { break-inside: avoid; }
+    h2 { break-before: page; }
+    h2:first-of-type { break-before: auto; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>El Poseído</h1>
+  <div class="subtitle">Listado de cartas físicas y pares de palabras-objetivo</div>
+</header>
+
+<section>
+  <h2>Cartas para los papelitos <span class="counter">64</span></h2>
+  <div class="summary">
+    Escribí cada palabra en un papelito. Tachá la casilla al hacerlo. Mazo único, se reparte de a 5 cartas por jugador cada ronda y vuelven todas al mazo al final.
+  </div>
+
+  <h3>Elementos y naturaleza (11)</h3>
+  <div class="card-grid">
+    <div class="card-item"><span class="box"></span>fuego</div>
+    <div class="card-item"><span class="box"></span>agua</div>
+    <div class="card-item"><span class="box"></span>viento</div>
+    <div class="card-item"><span class="box"></span>tierra</div>
+    <div class="card-item"><span class="box"></span>hielo</div>
+    <div class="card-item"><span class="box"></span>sombra</div>
+    <div class="card-item"><span class="box"></span>niebla</div>
+    <div class="card-item"><span class="box"></span>raíz</div>
+    <div class="card-item"><span class="box"></span>rama</div>
+    <div class="card-item"><span class="box"></span>ceniza</div>
+    <div class="card-item"><span class="box"></span>ola</div>
+  </div>
+
+  <h3>Animales (5)</h3>
+  <div class="card-grid">
+    <div class="card-item"><span class="box"></span>lobo</div>
+    <div class="card-item"><span class="box"></span>cuervo</div>
+    <div class="card-item"><span class="box"></span>serpiente</div>
+    <div class="card-item"><span class="box"></span>pez</div>
+    <div class="card-item"><span class="box"></span>abeja</div>
+  </div>
+
+  <h3>Cuerpo y sentidos (8)</h3>
+  <div class="card-grid">
+    <div class="card-item"><span class="box"></span>sangre</div>
+    <div class="card-item"><span class="box"></span>ojo</div>
+    <div class="card-item"><span class="box"></span>mano</div>
+    <div class="card-item"><span class="box"></span>aliento</div>
+    <div class="card-item"><span class="box"></span>hueso</div>
+    <div class="card-item"><span class="box"></span>piel</div>
+    <div class="card-item"><span class="box"></span>lágrima</div>
+    <div class="card-item"><span class="box"></span>corazón</div>
+  </div>
+
+  <h3>Objetos (10)</h3>
+  <div class="card-grid">
+    <div class="card-item"><span class="box"></span>llave</div>
+    <div class="card-item"><span class="box"></span>espejo</div>
+    <div class="card-item"><span class="box"></span>vela</div>
+    <div class="card-item"><span class="box"></span>cuchillo</div>
+    <div class="card-item"><span class="box"></span>libro</div>
+    <div class="card-item"><span class="box"></span>máscara</div>
+    <div class="card-item"><span class="box"></span>cadena</div>
+    <div class="card-item"><span class="box"></span>copa</div>
+    <div class="card-item"><span class="box"></span>anillo</div>
+    <div class="card-item"><span class="box"></span>hilo</div>
+  </div>
+
+  <h3>Colores y texturas (7)</h3>
+  <div class="card-grid">
+    <div class="card-item"><span class="box"></span>rojo</div>
+    <div class="card-item"><span class="box"></span>dorado</div>
+    <div class="card-item"><span class="box"></span>negro</div>
+    <div class="card-item"><span class="box"></span>blanco</div>
+    <div class="card-item"><span class="box"></span>plata</div>
+    <div class="card-item"><span class="box"></span>áspero</div>
+    <div class="card-item"><span class="box"></span>brillante</div>
+  </div>
+
+  <h3>Sensaciones y estados (6)</h3>
+  <div class="card-grid">
+    <div class="card-item"><span class="box"></span>frío</div>
+    <div class="card-item"><span class="box"></span>calor</div>
+    <div class="card-item"><span class="box"></span>vacío</div>
+    <div class="card-item"><span class="box"></span>roto</div>
+    <div class="card-item"><span class="box"></span>dulce</div>
+    <div class="card-item"><span class="box"></span>ácido</div>
+  </div>
+
+  <h3>Abstractos (7)</h3>
+  <div class="card-grid">
+    <div class="card-item"><span class="box"></span>muerte</div>
+    <div class="card-item"><span class="box"></span>silencio</div>
+    <div class="card-item"><span class="box"></span>miedo</div>
+    <div class="card-item"><span class="box"></span>secreto</div>
+    <div class="card-item"><span class="box"></span>hambre</div>
+    <div class="card-item"><span class="box"></span>sueño</div>
+    <div class="card-item"><span class="box"></span>olvido</div>
+  </div>
+
+  <h3>Sonidos (4)</h3>
+  <div class="card-grid">
+    <div class="card-item"><span class="box"></span>eco</div>
+    <div class="card-item"><span class="box"></span>susurro</div>
+    <div class="card-item"><span class="box"></span>canto</div>
+    <div class="card-item"><span class="box"></span>campana</div>
+  </div>
+
+  <h3>Tiempo y espacio (4)</h3>
+  <div class="card-grid">
+    <div class="card-item"><span class="box"></span>noche</div>
+    <div class="card-item"><span class="box"></span>amanecer</div>
+    <div class="card-item"><span class="box"></span>abismo</div>
+    <div class="card-item"><span class="box"></span>umbral</div>
+  </div>
+
+  <h3>Movimiento (2)</h3>
+  <div class="card-grid">
+    <div class="card-item"><span class="box"></span>caída</div>
+    <div class="card-item"><span class="box"></span>fuga</div>
+  </div>
+</section>
+
+<section>
+  <h2>Pares de palabras-objetivo <span class="counter">40</span></h2>
+  <div class="summary">
+    Cada ronda la UI elige un par. Los enfermos y el sacerdote ven la palabra de la columna <strong>Enfermos</strong>. El poseído ve la de <strong>Poseído</strong>. La columna <strong>Comparten</strong> es una nota interna sobre por qué el par funciona — no se muestra a los jugadores.
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Enfermos</th>
+        <th>Poseído</th>
+        <th>Comparten</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="num">1</td><td class="real">playa</td><td class="poseido">desierto</td><td class="shared">arena, calor, horizonte, soledad</td></tr>
+      <tr><td class="num">2</td><td class="real">bosque</td><td class="poseido">selva</td><td class="shared">árboles, animales, oscuridad, perderse</td></tr>
+      <tr><td class="num">3</td><td class="real">montaña</td><td class="poseido">volcán</td><td class="shared">altura, piedra, cima, peligro</td></tr>
+      <tr><td class="num">4</td><td class="real">río</td><td class="poseido">lago</td><td class="shared">agua dulce, naturaleza, reflejo</td></tr>
+      <tr><td class="num">5</td><td class="real">médico</td><td class="poseido">veterinario</td><td class="shared">jeringa, bata blanca, curar, consultorio</td></tr>
+      <tr><td class="num">6</td><td class="real">maestro</td><td class="poseido">sacerdote</td><td class="shared">enseñar, autoridad, repetir, vocación</td></tr>
+      <tr><td class="num">7</td><td class="real">bombero</td><td class="poseido">policía</td><td class="shared">uniforme, emergencia, sirena, valentía</td></tr>
+      <tr><td class="num">8</td><td class="real">chef</td><td class="poseido">panadero</td><td class="shared">cocina, horno, harina, delantal</td></tr>
+      <tr><td class="num">9</td><td class="real">mago</td><td class="poseido">payaso</td><td class="shared">espectáculo, niños, disfraz, sorpresa</td></tr>
+      <tr><td class="num">10</td><td class="real">soldado</td><td class="poseido">cazador</td><td class="shared">arma, bosque, sigilo, presa</td></tr>
+      <tr><td class="num">11</td><td class="real">piloto</td><td class="poseido">capitán de barco</td><td class="shared">vehículo, mando, viaje, uniforme</td></tr>
+      <tr><td class="num">12</td><td class="real">astronauta</td><td class="poseido">buzo</td><td class="shared">traje, oxígeno, ambiente extremo, soledad</td></tr>
+      <tr><td class="num">13</td><td class="real">dentista</td><td class="poseido">barbero</td><td class="shared">sillón, herramientas, cabeza, espejo</td></tr>
+      <tr><td class="num">14</td><td class="real">perro</td><td class="poseido">lobo</td><td class="shared">canino, peludo, manada, aullar</td></tr>
+      <tr><td class="num">15</td><td class="real">gato</td><td class="poseido">tigre</td><td class="shared">felino, garras, sigilo, ojos</td></tr>
+      <tr><td class="num">16</td><td class="real">caballo</td><td class="poseido">vaca</td><td class="shared">cuatro patas, granja, pasto, grande</td></tr>
+      <tr><td class="num">17</td><td class="real">águila</td><td class="poseido">halcón</td><td class="shared">rapaz, vuela alto, vista, presa</td></tr>
+      <tr><td class="num">18</td><td class="real">ballena</td><td class="poseido">tiburón</td><td class="shared">mar, grande, profundidad, miedo</td></tr>
+      <tr><td class="num">19</td><td class="real">conejo</td><td class="poseido">ratón</td><td class="shared">pequeño, orejas, escapar, madriguera</td></tr>
+      <tr><td class="num">20</td><td class="real">mariposa</td><td class="poseido">libélula</td><td class="shared">insecto, alas, colores, flor</td></tr>
+      <tr><td class="num">21</td><td class="real">guitarra</td><td class="poseido">arpa</td><td class="shared">cuerdas, madera, música, manos</td></tr>
+      <tr><td class="num">22</td><td class="real">piano</td><td class="poseido">órgano</td><td class="shared">teclas, música, sentado, grande</td></tr>
+      <tr><td class="num">23</td><td class="real">libro</td><td class="poseido">cuaderno</td><td class="shared">papel, páginas, palabras, leer</td></tr>
+      <tr><td class="num">24</td><td class="real">reloj</td><td class="poseido">brújula</td><td class="shared">círculo, agujas, orientación, precisión</td></tr>
+      <tr><td class="num">25</td><td class="real">vela</td><td class="poseido">linterna</td><td class="shared">luz, oscuridad, llevar, miedo</td></tr>
+      <tr><td class="num">26</td><td class="real">cuchillo</td><td class="poseido">tijera</td><td class="shared">metal, corta, filo, mano</td></tr>
+      <tr><td class="num">27</td><td class="real">llave</td><td class="poseido">candado</td><td class="shared">cerradura, abrir, secreto, metal</td></tr>
+      <tr><td class="num">28</td><td class="real">espejo</td><td class="poseido">ventana</td><td class="shared">vidrio, reflejo, ver, marco</td></tr>
+      <tr><td class="num">29</td><td class="real">pizza</td><td class="poseido">empanada</td><td class="shared">masa, relleno, horno, compartir</td></tr>
+      <tr><td class="num">30</td><td class="real">vino</td><td class="poseido">cerveza</td><td class="shared">alcohol, copa, reunión, fermentar</td></tr>
+      <tr><td class="num">31</td><td class="real">café</td><td class="poseido">té</td><td class="shared">caliente, taza, desayuno, hojas o granos</td></tr>
+      <tr><td class="num">32</td><td class="real">helado</td><td class="poseido">torta</td><td class="shared">postre, dulce, cumpleaños, frío o tibio</td></tr>
+      <tr><td class="num">33</td><td class="real">boda</td><td class="poseido">funeral</td><td class="shared">ceremonia, ropa formal, familia, iglesia</td></tr>
+      <tr><td class="num">34</td><td class="real">cumpleaños</td><td class="poseido">navidad</td><td class="shared">festejo, regalo, torta, familia</td></tr>
+      <tr><td class="num">35</td><td class="real">examen</td><td class="poseido">entrevista</td><td class="shared">evaluación, nervios, preguntas, juicio</td></tr>
+      <tr><td class="num">36</td><td class="real">iglesia</td><td class="poseido">castillo</td><td class="shared">piedra, torre, antiguo, ceremonia</td></tr>
+      <tr><td class="num">37</td><td class="real">cárcel</td><td class="poseido">monasterio</td><td class="shared">encierro, reglas, silencio, hábito</td></tr>
+      <tr><td class="num">38</td><td class="real">biblioteca</td><td class="poseido">museo</td><td class="shared">silencio, antigüedad, conocimiento, salas</td></tr>
+      <tr><td class="num">39</td><td class="real">lluvia</td><td class="poseido">nieve</td><td class="shared">cae del cielo, frío, mojado, tapa visión</td></tr>
+      <tr><td class="num">40</td><td class="real">amanecer</td><td class="poseido">atardecer</td><td class="shared">sol en horizonte, colores, transición</td></tr>
+    </tbody>
+  </table>
+</section>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>El Poseído</title>
+<style>
+  :root {
+    --bg: #f5f1ea;
+    --ink: #2a2420;
+    --accent: #8b1e1e;
+    --muted: #6b5d52;
+    --line: #d4c9b8;
+    --card-bg: #fff;
+    --gold: #b08a3c;
+    --green: #4a6b3a;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    margin: 0; padding: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    background: var(--bg); color: var(--ink);
+    min-height: 100vh; min-height: 100dvh;
+    overflow-x: hidden;
+  }
+  body {
+    display: flex; flex-direction: column;
+    min-height: 100vh; min-height: 100dvh;
+  }
+  .screen {
+    display: none; flex: 1;
+    flex-direction: column; align-items: center; justify-content: center;
+    padding: 28px 24px; text-align: center;
+    animation: fade .25s ease-out;
+  }
+  .screen.active { display: flex; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  h1 {
+    font-size: 2.4rem; color: var(--accent);
+    margin: 0 0 8px; letter-spacing: 1.5px;
+  }
+  .subtitle { color: var(--muted); font-style: italic; margin: 0 0 32px; }
+  .kicker {
+    font-size: 0.78rem; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--muted); margin-bottom: 12px;
+  }
+
+  button {
+    font-family: inherit; font-size: 1.1rem;
+    padding: 14px 28px; border-radius: 6px;
+    border: none; cursor: pointer;
+    background: var(--accent); color: white;
+    letter-spacing: 0.5px;
+    transition: transform .08s, opacity .15s;
+  }
+  button:active { transform: scale(0.97); }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+  button.secondary { background: transparent; color: var(--ink); border: 1.5px solid var(--ink); }
+  button.ghost { background: transparent; color: var(--muted); padding: 8px 14px; font-size: 0.9rem; }
+  button.big { font-size: 1.3rem; padding: 18px 36px; min-width: 240px; }
+
+  /* ====== Setup ====== */
+  #setup .players-input { width: 100%; max-width: 420px; margin-bottom: 16px; }
+  #setup .row {
+    display: flex; gap: 8px; margin-bottom: 8px;
+  }
+  #setup input[type="text"] {
+    flex: 1; font-family: inherit; font-size: 1.1rem;
+    padding: 12px 14px; border: 1.5px solid var(--line);
+    border-radius: 6px; background: var(--card-bg); color: var(--ink);
+  }
+  #setup input[type="text"]:focus { outline: none; border-color: var(--accent); }
+  #setup .rm-btn {
+    background: transparent; color: var(--muted);
+    padding: 4px 10px; font-size: 1.4rem; line-height: 1;
+    border: 1.5px solid var(--line); border-radius: 6px;
+  }
+  #setup .add-btn {
+    background: transparent; color: var(--accent);
+    border: 1.5px dashed var(--accent); padding: 10px;
+    width: 100%; max-width: 420px; margin-bottom: 20px;
+  }
+  #setup .count-note { font-size: 0.85rem; color: var(--muted); margin-bottom: 16px; }
+  #setup .count-note.warn { color: var(--accent); }
+
+  /* ====== Pass-computer ====== */
+  #pass .pass-name {
+    font-size: 2.8rem; color: var(--accent); margin: 18px 0 40px;
+    font-style: italic;
+  }
+  #pass .pass-hint { color: var(--muted); margin-bottom: 32px; font-size: 1.05rem; }
+
+  /* ====== Role reveal ====== */
+  /* Fondo idéntico para todos los roles para que no se delate por reflejo */
+  #reveal { background: var(--bg); }
+  #reveal .role-tag {
+    font-size: 0.9rem; text-transform: uppercase; letter-spacing: 3px;
+    margin-bottom: 16px; color: var(--muted);
+  }
+  #reveal .role-name {
+    font-size: 3rem; margin: 0 0 32px; letter-spacing: 2px;
+    font-weight: bold; color: var(--ink);
+  }
+
+  #reveal .word-label { font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; opacity: 0.7; }
+  #reveal .word-value {
+    font-size: 4rem; margin: 8px 0 40px; font-weight: bold;
+    font-family: Georgia, serif;
+  }
+  #reveal .gate {
+    font-size: 1.1rem;
+    padding: 60px 40px;
+    border: 2px dashed currentColor;
+    border-radius: 12px;
+    opacity: 0.7;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  /* ====== Discussion ====== */
+  #discussion .word-card {
+    background: var(--card-bg); border: 1px solid var(--line);
+    padding: 24px 32px; border-radius: 8px; margin: 16px 0 28px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+  #discussion .word-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); }
+  #discussion .word-value { font-size: 2.4rem; color: var(--accent); margin: 6px 0 0; font-weight: bold; }
+  #discussion .note { color: var(--muted); font-size: 0.95rem; max-width: 480px; margin: 0 auto 24px; }
+
+  /* ====== Decision ====== */
+  #decision .candidate-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px; width: 100%; max-width: 600px; margin: 24px 0;
+  }
+  #decision .candidate {
+    padding: 22px 16px; border: 2px solid var(--line);
+    background: var(--card-bg); color: var(--ink); border-radius: 8px;
+    font-size: 1.2rem; cursor: pointer;
+    transition: border-color .15s, transform .08s;
+    font-family: inherit;
+  }
+  #decision .candidate:hover { border-color: var(--accent); }
+  #decision .candidate.selected { border-color: var(--accent); background: #fff4e6; color: var(--ink); }
+  #decision .candidate:active { transform: scale(0.97); }
+  #decision .agua-bendita {
+    margin-top: 8px; background: transparent; color: var(--muted);
+    border: 1.5px solid var(--line); padding: 10px 20px; font-size: 0.95rem;
+  }
+  #decision .agua-bendita:hover { color: var(--accent); border-color: var(--accent); }
+  #decision .actions {
+    display: flex; flex-direction: column; gap: 10px; align-items: center;
+  }
+
+  /* ====== Result ====== */
+  #result.is-correct { background: #ecf0e6; }
+  #result.is-wrong { background: #2a1010; color: #f5e8e8; }
+  #result.is-win { background: #faf4e3; }
+  #result .outcome {
+    font-size: 2.4rem; margin: 16px 0; letter-spacing: 1px;
+  }
+  #result.is-correct .outcome { color: var(--green); }
+  #result.is-wrong .outcome { color: #d97a7a; }
+  #result.is-win .outcome { color: var(--gold); }
+  #result .detail { font-size: 1.2rem; margin-bottom: 32px; max-width: 480px; }
+  #result .roles-list {
+    background: rgba(255,255,255,0.5); padding: 14px 22px; border-radius: 8px;
+    margin-bottom: 28px; font-size: 0.95rem;
+  }
+  #result.is-wrong .roles-list { background: rgba(255,255,255,0.1); }
+  #result .roles-list .row { margin: 4px 0; }
+  #result .roles-list .role { color: var(--muted); font-style: italic; margin-left: 8px; }
+  #result.is-wrong .roles-list .role { color: #c0a8a8; }
+
+  /* ====== Intro ====== */
+  #intro {
+    position: relative; overflow: hidden;
+    background: linear-gradient(180deg, #ebe4d4 0%, var(--bg) 60%);
+  }
+  /* Lluvia sutil de fondo */
+  #intro::before {
+    content: ''; position: absolute; inset: 0;
+    background-image:
+      repeating-linear-gradient(105deg,
+        transparent 0, transparent 14px,
+        rgba(60, 50, 40, 0.06) 14px, rgba(60, 50, 40, 0.06) 15px);
+    pointer-events: none;
+    animation: rain 1.4s linear infinite;
+  }
+  @keyframes rain {
+    0% { background-position: 0 0; }
+    100% { background-position: 30px 120px; }
+  }
+  #intro .intro-content {
+    position: relative; z-index: 1;
+    max-width: 580px;
+    background: rgba(255, 250, 240, 0.7);
+    padding: 36px 32px; border-radius: 8px;
+    backdrop-filter: blur(2px);
+    border: 1px solid var(--line);
+  }
+  #intro .narrative {
+    text-align: left; font-size: 1.05rem; line-height: 1.7;
+    color: var(--ink); margin: 18px 0 28px;
+  }
+  #intro .narrative em { color: var(--accent); font-style: italic; }
+  #intro .credits {
+    color: var(--muted); font-size: 0.82rem; font-style: italic;
+    margin-top: 24px; line-height: 1.5;
+  }
+
+  /* ====== Estatua (Usar Estatuilla) ====== */
+  .statuilla-scene {
+    display: flex; flex-direction: column; align-items: center;
+    margin: 8px 0 28px; min-height: 200px;
+  }
+  .statue {
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .statue .figure {
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .statue .upper {
+    display: flex; flex-direction: column; align-items: center;
+    transform-origin: center bottom;
+    transform: rotate(-42deg);
+  }
+  .statue .head {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--gold); margin-bottom: -2px;
+  }
+  .statue .torso {
+    width: 22px; height: 62px;
+    background: var(--gold);
+    border-radius: 3px 3px 1px 1px;
+  }
+  .statue .legs {
+    width: 22px; height: 48px;
+    background: var(--gold);
+    border-radius: 1px 1px 0 0;
+  }
+  .statue .pedestal {
+    width: 56px; height: 14px; background: var(--gold);
+    border-radius: 2px;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.08);
+    margin-top: 1px;
+  }
+
+  /* ====== Vela (al salvar bien a un enfermo) ====== */
+  .candle-scene {
+    display: flex; flex-direction: column; align-items: center;
+    margin: 8px 0 28px; min-height: 200px;
+  }
+  .candle {
+    display: flex; flex-direction: column; align-items: center;
+    position: relative;
+  }
+  .candle .flame {
+    width: 14px; height: 24px;
+    background: radial-gradient(ellipse at 50% 70%,
+      #fff5b0 0%, #ffc04a 50%, #d97a17 95%);
+    border-radius: 50% 50% 38% 38% / 65% 65% 35% 35%;
+    margin-bottom: -4px;
+    transform-origin: center bottom;
+    opacity: 0; transform: scale(0);
+    box-shadow:
+      0 0 24px 8px rgba(255, 180, 60, 0.45),
+      0 0 60px 20px rgba(255, 200, 100, 0.18);
+  }
+  .candle .wick {
+    width: 2px; height: 7px;
+    background: #2a2420;
+  }
+  .candle .wax {
+    width: 32px; height: 110px;
+    background: linear-gradient(180deg, #faf4e3 0%, #ebdfbf 100%);
+    border-radius: 3px 3px 0 0;
+    border: 1px solid var(--line);
+    border-bottom: none;
+    position: relative;
+  }
+  .candle .wax::after {
+    content: ''; position: absolute;
+    top: -1px; right: 5px; width: 3px; height: 14px;
+    background: #ebdfbf;
+    border-radius: 0 0 2px 2px;
+  }
+  .candle .holder {
+    width: 52px; height: 9px;
+    background: linear-gradient(180deg, #d4b576, #9a7b3a);
+    border-radius: 2px;
+    box-shadow: 0 2px 0 rgba(0,0,0,0.1);
+  }
+  .candle-label {
+    color: var(--ink); font-size: 1rem;
+    margin-top: 18px; font-style: italic;
+    letter-spacing: 0.5px;
+  }
+  .candle-scene.animate {
+    animation: fade-up 1s ease-out both;
+  }
+  .candle-scene.animate .candle .flame {
+    animation:
+      candle-light 1.2s cubic-bezier(.4, 0, .3, 1) forwards,
+      flicker 2.4s ease-in-out infinite 1.2s;
+  }
+  @keyframes candle-light {
+    0%   { opacity: 0; transform: scale(0); }
+    40%  { opacity: 1; transform: scale(1.35); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  @keyframes flicker {
+    0%, 100% { transform: scale(1) translateX(0); }
+    25% { transform: scale(1.05, 0.95) translateX(-0.5px); }
+    50% { transform: scale(0.95, 1.05) translateX(0.5px); }
+    75% { transform: scale(1.02, 0.98) translateX(0); }
+  }
+  @keyframes fade-up {
+    0%   { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: none; }
+  }
+
+  /* ====== Intro secondary buttons ====== */
+  .intro-secondary {
+    margin-top: 14px;
+    display: flex; justify-content: center; gap: 10px;
+    flex-wrap: wrap;
+  }
+  .ghost-link {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--line);
+    padding: 8px 18px;
+    font-size: 0.9rem;
+    letter-spacing: 0.3px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .ghost-link:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  /* ====== Doc screens (reglas / cartas embebidos) ====== */
+  .doc-screen.active {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    padding: 0;
+    text-align: left;
+  }
+  .doc-header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 16px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+  .doc-back {
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 6px 14px;
+    font-size: 0.9rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .doc-back:hover { background: var(--accent); color: white; }
+  .doc-title {
+    color: var(--muted); font-size: 0.9rem;
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+  .doc-iframe {
+    flex: 1;
+    width: 100%;
+    border: none;
+    background: var(--bg);
+    min-height: 0;
+  }
+
+  /* ====== Footer ====== */
+  footer {
+    text-align: center; padding: 12px;
+    color: var(--muted); font-size: 0.78rem;
+    border-top: 1px solid var(--line);
+  }
+  footer a { color: var(--accent); text-decoration: none; }
+
+  @media (max-width: 480px) {
+    h1 { font-size: 1.9rem; }
+    #pass .pass-name { font-size: 2rem; }
+    #reveal .role-name { font-size: 2.2rem; }
+    #reveal .word-value { font-size: 3rem; }
+    button.big { font-size: 1.1rem; padding: 16px 28px; min-width: 200px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ INTRO ============ -->
+<section id="intro" class="screen active">
+  <div class="intro-content">
+    <h1>El Poseído</h1>
+    <div class="subtitle">un juego de empatía e intuición</div>
+    <div class="narrative">
+      Quedan <em>dos meses</em> antes de que el sacerdote tenga que irse del pueblo. Antes de partir, debe purgar a un poseído que se esconde entre los enfermos terminales del hospicio. Afuera llueve sin parar. Adentro, los enfermos se reúnen alrededor de una mesa iluminada por velas — como en <em>La lección de anatomía del Dr. Tulp</em> de Rembrandt, donde un cadáver yace mientras los hombres lo escrutan buscando una verdad.
+      <br><br>
+      El sacerdote no puede leer mentes, pero sabe una cosa: el poseído carece de <em>empatía</em>. Aunque finja saber, sus palabras delatan una desconexión con el sufrimiento real. Solo la <em>inteligencia</em> del sacerdote puede distinguir la empatía verdadera del simulacro — antes de que se le acabe el tiempo.
+    </div>
+    <button class="big" onclick="goSetup()">Comenzar</button>
+    <div class="intro-secondary">
+      <button class="ghost-link" onclick="show('reglas')">Reglas</button>
+      <button class="ghost-link" onclick="show('cartas')">Cartas</button>
+    </div>
+    <div class="credits">
+      Inspirado en <em>La lección de anatomía del Dr. Tulp</em> (Rembrandt, 1632).
+    </div>
+  </div>
+</section>
+
+<!-- ============ SETUP ============ -->
+<section id="setup" class="screen">
+  <h1>El Poseído</h1>
+  <div class="subtitle">Ingresá los nombres de los jugadores</div>
+  <div class="players-input" id="players-input"></div>
+  <button class="add-btn" onclick="addPlayerInput()">+ Agregar jugador</button>
+  <div class="count-note" id="count-note">Mínimo 4 jugadores</div>
+  <button class="big" id="start-btn" onclick="startGame()" disabled>Comenzar partida</button>
+</section>
+
+<!-- ============ PASS COMPUTER ============ -->
+<section id="pass" class="screen">
+  <div class="kicker" id="pass-round">Semana 1</div>
+  <div class="pass-hint">Pasale la compu a</div>
+  <div class="pass-name" id="pass-name">—</div>
+  <button class="big" onclick="showReveal()">Soy <span id="pass-me">—</span></button>
+</section>
+
+<!-- ============ ROLE REVEAL ============ -->
+<section id="reveal" class="screen">
+  <div id="reveal-gate" class="gate" onclick="unlockReveal()">Tocá para ver tu rol</div>
+  <div id="reveal-content" style="display:none;">
+    <div class="role-tag">Tu rol</div>
+    <div class="role-name" id="reveal-role">—</div>
+    <div class="word-label">Palabra</div>
+    <div class="word-value" id="reveal-word">—</div>
+    <button class="big" onclick="hideReveal()">Ocultar y pasar</button>
+  </div>
+</section>
+
+<!-- ============ DISCUSSION ============ -->
+<section id="discussion" class="screen">
+  <div class="kicker" id="disc-round">Semana 1</div>
+  <h1 style="font-size:1.8rem; letter-spacing:1px;">Repartan cartas y discutan</h1>
+  <div class="note" style="margin-top:24px;">
+    Cada enfermo terminal toma 5 cartas del mazo y elige una en secreto. Cuando todos hayan elegido, revelan a la vez y discuten. El sacerdote escucha en silencio buscando empatía verdadera detrás de las palabras — el poseído carece de ella.
+  </div>
+  <button class="big" onclick="showDecision()" style="margin-top:32px;">El sacerdote decide</button>
+</section>
+
+<!-- ============ DECISION ============ -->
+<section id="decision" class="screen">
+  <div class="kicker" id="dec-round">Semana 1</div>
+  <h1 style="font-size:1.8rem; letter-spacing:1px;">¿A quién salvás?</h1>
+  <div class="candidate-grid" id="candidates"></div>
+  <div class="actions">
+    <button class="big" id="confirm-save-btn" onclick="confirmSave()" disabled>Salvar</button>
+    <button class="agua-bendita" id="estatuilla-btn" onclick="useEstatuilla()">
+      Usar Estatuilla · saltear esta semana
+    </button>
+  </div>
+</section>
+
+<!-- ============ RESULT ============ -->
+<section id="result" class="screen">
+  <div class="kicker" id="result-kicker">Resultado</div>
+  <div class="outcome" id="result-outcome">—</div>
+  <div class="detail" id="result-detail">—</div>
+
+  <!-- Vela: visible cuando salva bien a un enfermo terminal -->
+  <div class="candle-scene" id="candle-scene" style="display:none;">
+    <div class="candle">
+      <div class="flame"></div>
+      <div class="wick"></div>
+      <div class="wax"></div>
+      <div class="holder"></div>
+    </div>
+    <div class="candle-label" id="candle-saved-name">—</div>
+  </div>
+
+  <!-- Estatuilla: visible al usar la habilidad Estatuilla -->
+  <div class="statuilla-scene" id="statuilla-scene" style="display:none;">
+    <div class="statue">
+      <div class="figure">
+        <div class="upper">
+          <div class="head"></div>
+          <div class="torso"></div>
+        </div>
+        <div class="legs"></div>
+      </div>
+      <div class="pedestal"></div>
+    </div>
+  </div>
+
+  <div class="roles-list" id="roles-list" style="display:none;"></div>
+  <button class="big" id="result-next" onclick="nextRound()">Siguiente semana</button>
+  <button class="ghost" onclick="resetGame()" style="margin-top:12px;">Nueva partida</button>
+</section>
+
+<!-- ============ REGLAS (embebido) ============ -->
+<section id="reglas" class="screen doc-screen">
+  <div class="doc-header">
+    <button class="doc-back" onclick="show('intro')">← Volver</button>
+    <span class="doc-title">Reglas</span>
+  </div>
+  <iframe class="doc-iframe" src="reglas.html" title="Reglas del juego"></iframe>
+</section>
+
+<!-- ============ CARTAS (embebido) ============ -->
+<section id="cartas" class="screen doc-screen">
+  <div class="doc-header">
+    <button class="doc-back" onclick="show('intro')">← Volver</button>
+    <span class="doc-title">Cartas y pares de palabras</span>
+  </div>
+  <iframe class="doc-iframe" src="cartas.html" title="Cartas y pares"></iframe>
+</section>
+
+<footer>El Poseído</footer>
+
+<script>
+// ============ Pares de palabras ============
+const PAIRS = [
+  { real: "playa", poseido: "desierto" },
+  { real: "bosque", poseido: "selva" },
+  { real: "montaña", poseido: "volcán" },
+  { real: "río", poseido: "lago" },
+  { real: "médico", poseido: "veterinario" },
+  { real: "maestro", poseido: "sacerdote" },
+  { real: "bombero", poseido: "policía" },
+  { real: "chef", poseido: "panadero" },
+  { real: "mago", poseido: "payaso" },
+  { real: "soldado", poseido: "cazador" },
+  { real: "piloto", poseido: "capitán de barco" },
+  { real: "astronauta", poseido: "buzo" },
+  { real: "dentista", poseido: "barbero" },
+  { real: "perro", poseido: "lobo" },
+  { real: "gato", poseido: "tigre" },
+  { real: "caballo", poseido: "vaca" },
+  { real: "águila", poseido: "halcón" },
+  { real: "ballena", poseido: "tiburón" },
+  { real: "conejo", poseido: "ratón" },
+  { real: "mariposa", poseido: "libélula" },
+  { real: "guitarra", poseido: "arpa" },
+  { real: "piano", poseido: "órgano" },
+  { real: "libro", poseido: "cuaderno" },
+  { real: "reloj", poseido: "brújula" },
+  { real: "vela", poseido: "linterna" },
+  { real: "cuchillo", poseido: "tijera" },
+  { real: "llave", poseido: "candado" },
+  { real: "espejo", poseido: "ventana" },
+  { real: "pizza", poseido: "empanada" },
+  { real: "vino", poseido: "cerveza" },
+  { real: "café", poseido: "té" },
+  { real: "helado", poseido: "torta" },
+  { real: "boda", poseido: "funeral" },
+  { real: "cumpleaños", poseido: "navidad" },
+  { real: "examen", poseido: "entrevista" },
+  { real: "iglesia", poseido: "castillo" },
+  { real: "cárcel", poseido: "monasterio" },
+  { real: "biblioteca", poseido: "museo" },
+  { real: "lluvia", poseido: "nieve" },
+  { real: "amanecer", poseido: "atardecer" }
+];
+
+// ============ Estado ============
+let state = null;
+function freshState() {
+  return {
+    players: [],         // {name, role:'sacerdote'|'enfermo'|'poseido', saved:false}
+    round: 1,
+    pair: null,
+    usedPairs: new Set(),
+    revealQueue: [],
+    currentReveal: null,
+    selectedCandidate: null,
+    estatuillaUsed: false,
+  };
+}
+
+// ============ Utilidades ============
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function pickPair() {
+  const available = PAIRS.filter((_, i) => !state.usedPairs.has(i));
+  const pool = available.length > 0 ? available : PAIRS;
+  const idx = PAIRS.indexOf(pool[Math.floor(Math.random() * pool.length)]);
+  state.usedPairs.add(idx);
+  return PAIRS[idx];
+}
+function enfermosCount() { return state.players.filter(p => p.role === 'enfermo').length; }
+
+// ============ SETUP ============
+function addPlayerInput(value = '') {
+  const wrap = document.getElementById('players-input');
+  const row = document.createElement('div');
+  row.className = 'row';
+  row.innerHTML = `
+    <input type="text" placeholder="Nombre" value="${value}" oninput="updateStartBtn()">
+    <button class="rm-btn" onclick="this.parentElement.remove(); updateStartBtn();">×</button>
+  `;
+  wrap.appendChild(row);
+  updateStartBtn();
+}
+function updateStartBtn() {
+  const inputs = document.querySelectorAll('#players-input input');
+  const names = [...inputs].map(i => i.value.trim()).filter(n => n.length > 0);
+  const note = document.getElementById('count-note');
+  const btn = document.getElementById('start-btn');
+  const unique = new Set(names.map(n => n.toLowerCase()));
+  if (names.length < 4) {
+    note.textContent = `${names.length} jugadores · faltan ${4 - names.length} para empezar`;
+    note.className = 'count-note warn';
+    btn.disabled = true;
+  } else if (names.length > 8) {
+    note.textContent = `${names.length} jugadores · máximo 8`;
+    note.className = 'count-note warn';
+    btn.disabled = true;
+  } else if (unique.size !== names.length) {
+    note.textContent = 'Hay nombres repetidos';
+    note.className = 'count-note warn';
+    btn.disabled = true;
+  } else {
+    note.textContent = `${names.length} jugadores · 1 sacerdote, ${names.length - 2} enfermos terminales, 1 poseído`;
+    note.className = 'count-note';
+    btn.disabled = false;
+  }
+}
+function startGame() {
+  const inputs = document.querySelectorAll('#players-input input');
+  const names = [...inputs].map(i => i.value.trim()).filter(n => n.length > 0);
+  state = freshState();
+  // Asignar roles: 1 sacerdote, 1 poseído, resto enfermos
+  const shuffled = shuffle(names);
+  state.players = shuffled.map((name, i) => {
+    let role = 'enfermo';
+    if (i === 0) role = 'sacerdote';
+    else if (i === 1) role = 'poseido';
+    return { name, role, saved: false };
+  });
+  state.pair = pickPair();
+  state.revealQueue = buildRevealQueue();
+  goPass();
+}
+
+function buildRevealQueue() {
+  // Solo participan del reveal el sacerdote, los enfermos no salvados y el poseído.
+  // Los salvados quedan como espectadores.
+  return shuffle(state.players.filter(p => !p.saved).map(p => p.name));
+}
+
+// ============ PASS ============
+function goSetup() {
+  show('setup');
+}
+function goPass() {
+  if (state.revealQueue.length === 0) {
+    goDiscussion();
+    return;
+  }
+  document.getElementById('pass-round').textContent = `Semana ${state.round}`;
+  const next = state.revealQueue[0];
+  document.getElementById('pass-name').textContent = next;
+  document.getElementById('pass-me').textContent = next;
+  show('pass');
+}
+function showReveal() {
+  const name = state.revealQueue.shift();
+  state.currentReveal = name;
+  const player = state.players.find(p => p.name === name);
+  document.getElementById('reveal-gate').style.display = '';
+  document.getElementById('reveal-content').style.display = 'none';
+  // Cargar contenido (oculto hasta tocar)
+  const roleEl = document.getElementById('reveal-role');
+  const wordEl = document.getElementById('reveal-word');
+  if (player.role === 'sacerdote') {
+    roleEl.textContent = 'Sacerdote';
+    wordEl.textContent = state.pair.real;
+  } else if (player.role === 'enfermo') {
+    roleEl.textContent = 'Enfermo Terminal';
+    wordEl.textContent = state.pair.real;
+  } else {
+    roleEl.textContent = 'Poseído';
+    wordEl.textContent = state.pair.poseido;
+  }
+  show('reveal');
+}
+function unlockReveal() {
+  document.getElementById('reveal-gate').style.display = 'none';
+  document.getElementById('reveal-content').style.display = '';
+}
+function hideReveal() {
+  goPass();
+}
+
+// ============ DISCUSSION ============
+function goDiscussion() {
+  document.getElementById('disc-round').textContent = `Semana ${state.round}`;
+  show('discussion');
+}
+function showDecision() {
+  document.getElementById('dec-round').textContent = `Semana ${state.round}`;
+  const grid = document.getElementById('candidates');
+  grid.innerHTML = '';
+  state.selectedCandidate = null;
+  document.getElementById('confirm-save-btn').disabled = true;
+  // Mostrar/ocultar botón de estatuilla
+  document.getElementById('estatuilla-btn').style.display = state.estatuillaUsed ? 'none' : '';
+  // Candidatos: jugadores no-sacerdote y no-salvados
+  state.players
+    .filter(p => p.role !== 'sacerdote' && !p.saved)
+    .forEach(p => {
+      const btn = document.createElement('button');
+      btn.className = 'candidate';
+      btn.textContent = p.name;
+      btn.onclick = () => selectCandidate(p.name, btn);
+      grid.appendChild(btn);
+    });
+  show('decision');
+}
+function useEstatuilla() {
+  if (state.estatuillaUsed) return;
+  if (!confirm('¿Usar Estatuilla? Pasás la semana sin salvar a nadie. Solo se puede usar una vez por partida.')) return;
+  state.estatuillaUsed = true;
+  const resultEl = document.getElementById('result');
+  resultEl.classList.remove('is-correct', 'is-wrong', 'is-win');
+  document.getElementById('roles-list').style.display = 'none';
+  document.getElementById('candle-scene').style.display = 'none';
+  document.getElementById('result-kicker').textContent = `Semana ${state.round}`;
+  document.getElementById('result-outcome').textContent = 'Estatuilla';
+  const remaining = state.players.filter(p => p.role === 'enfermo' && !p.saved).length;
+  document.getElementById('result-detail').textContent =
+    `El sacerdote inclinó la estatuilla en reverencia y pasó esta semana. Aún faltan ${remaining} enfermo${remaining === 1 ? '' : 's'} terminal${remaining === 1 ? '' : 'es'} por salvar.`;
+  document.getElementById('result-next').style.display = '';
+  document.getElementById('result-next').textContent = 'Siguiente semana';
+  showStatuillaScene();
+  show('result');
+}
+function showStatuillaScene() {
+  document.getElementById('statuilla-scene').style.display = '';
+}
+function selectCandidate(name, btn) {
+  document.querySelectorAll('.candidate').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  state.selectedCandidate = name;
+  document.getElementById('confirm-save-btn').disabled = false;
+}
+
+// ============ RESULT ============
+function confirmSave() {
+  const name = state.selectedCandidate;
+  const player = state.players.find(p => p.name === name);
+  const resultEl = document.getElementById('result');
+  resultEl.classList.remove('is-correct', 'is-wrong', 'is-win');
+  document.getElementById('roles-list').style.display = 'none';
+  document.getElementById('candle-scene').style.display = 'none';
+  document.getElementById('statuilla-scene').style.display = 'none';
+
+  if (player.role === 'poseido') {
+    // Sacerdote pierde
+    resultEl.classList.add('is-wrong');
+    document.getElementById('result-kicker').textContent = 'Fin de la partida';
+    document.getElementById('result-outcome').textContent = 'El poseído gana';
+    document.getElementById('result-detail').textContent = `Salvaste a ${name}, pero era el poseído.`;
+    showRolesList();
+    document.getElementById('result-next').style.display = 'none';
+  } else {
+    // Enfermo terminal salvado
+    player.saved = true;
+    const remainingEnfermos = state.players.filter(p => p.role === 'enfermo' && !p.saved).length;
+    if (remainingEnfermos === 0) {
+      // Sacerdote gana
+      resultEl.classList.add('is-win');
+      document.getElementById('result-kicker').textContent = 'Fin de la partida';
+      document.getElementById('result-outcome').textContent = 'Ganan sacerdote y enfermos terminales';
+      document.getElementById('result-detail').textContent = `Salvaste a todos los enfermos terminales sin caer en la trampa del poseído.`;
+      showRolesList();
+      document.getElementById('result-next').style.display = 'none';
+    } else {
+      resultEl.classList.add('is-correct');
+      document.getElementById('result-kicker').textContent = `Semana ${state.round}`;
+      document.getElementById('result-outcome').textContent = 'Era un enfermo terminal';
+      document.getElementById('result-detail').textContent = `Salvaste a ${name}. Quedan ${remainingEnfermos} enfermo${remainingEnfermos === 1 ? '' : 's'} terminal${remainingEnfermos === 1 ? '' : 'es'} por salvar.`;
+      document.getElementById('result-next').style.display = '';
+      document.getElementById('result-next').textContent = 'Siguiente semana';
+      showCandle(name);
+    }
+  }
+  show('result');
+}
+function showCandle(savedName) {
+  document.getElementById('candle-saved-name').textContent = savedName;
+  const scene = document.getElementById('candle-scene');
+  scene.style.display = '';
+  // Reiniciar la animación cada vez
+  scene.classList.remove('animate');
+  void scene.offsetWidth;
+  scene.classList.add('animate');
+}
+function showRolesList() {
+  const list = document.getElementById('roles-list');
+  list.innerHTML = state.players.map(p =>
+    `<div class="row"><strong>${p.name}</strong><span class="role">${roleLabel(p.role)}</span></div>`
+  ).join('');
+  list.style.display = '';
+}
+function roleLabel(r) {
+  if (r === 'sacerdote') return 'sacerdote';
+  if (r === 'poseido') return 'poseído';
+  return 'enfermo terminal';
+}
+function nextRound() {
+  state.round++;
+  state.pair = pickPair();
+  state.revealQueue = buildRevealQueue();
+  goPass();
+}
+function resetGame() {
+  state = null;
+  document.getElementById('players-input').innerHTML = '';
+  for (let i = 0; i < 4; i++) addPlayerInput();
+  show('intro');
+}
+
+// ============ Init ============
+for (let i = 0; i < 4; i++) addPlayerInput();
+</script>
+</body>
+</html>
