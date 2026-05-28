@@ -229,8 +229,6 @@
   }
   .timer-start:hover { background: var(--accent); color: #fff; }
   .timer-note { color: var(--muted); font-size: 0.85rem; font-style: italic; }
-  /* Versión compacta en la pantalla de decisión */
-  #decision .timer-display { font-size: 2rem; margin-bottom: 4px; }
 
   /* ====== Tabla de puntajes ====== */
   .scoreboard {
@@ -265,14 +263,23 @@
   /* En la pantalla de derrota (fondo oscuro) la tabla se mantiene legible */
   #result.is-wrong .scoreboard-title { color: #c0a8a8; }
 
-  /* ====== Decision ====== */
-  #decision .candidate-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 12px; width: 100%; max-width: 600px; margin: 24px 0;
+  /* ====== Decision (embebida en la pantalla de discusión) ====== */
+  #decision-block {
+    display: flex; flex-direction: column; align-items: center;
+    width: 100%;
   }
-  #decision .candidate {
-    padding: 22px 16px; border: 2px solid var(--line);
+  #decision-block .decision-q {
+    font-family: var(--serif-display);
+    font-size: 1.4rem; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--accent); margin: 4px 0 0; font-weight: 500;
+  }
+  #decision-block .candidate-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px; width: 100%; max-width: 600px; margin: 18px 0;
+  }
+  #decision-block .candidate {
+    padding: 20px 16px; border: 2px solid var(--line);
     background: var(--card-bg); color: var(--ink); border-radius: 8px;
     font-size: 1.2rem; cursor: pointer;
     transition: border-color .2s, transform .08s, background .2s, box-shadow .2s;
@@ -280,23 +287,23 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     letter-spacing: 0.3px;
   }
-  #decision .candidate:hover {
+  #decision-block .candidate:hover {
     border-color: var(--accent);
     box-shadow: 0 4px 12px rgba(139, 30, 30, 0.12);
   }
-  #decision .candidate.selected {
+  #decision-block .candidate.selected {
     border-color: var(--accent);
     background: #fff4e6;
     color: var(--ink);
     box-shadow: 0 4px 16px rgba(139, 30, 30, 0.18);
   }
-  #decision .candidate:active { transform: scale(0.97); }
-  #decision .agua-bendita {
+  #decision-block .candidate:active { transform: scale(0.97); }
+  #decision-block .agua-bendita {
     margin-top: 8px; background: transparent; color: var(--muted);
     border: 1.5px solid var(--line); padding: 10px 20px; font-size: 0.95rem;
   }
-  #decision .agua-bendita:hover { color: var(--accent); border-color: var(--accent); }
-  #decision .actions {
+  #decision-block .agua-bendita:hover { color: var(--accent); border-color: var(--accent); }
+  #decision-block .actions {
     display: flex; flex-direction: column; gap: 10px; align-items: center;
   }
 
@@ -569,12 +576,12 @@
     #reveal .word-value { font-size: 3.2rem; }
     #reveal .gate { padding: 44px 28px; }
     #discussion h1 { font-size: 1.5rem !important; }
-    #decision h1 { font-size: 1.5rem !important; }
-    #decision .candidate-grid {
+    #decision-block .decision-q { font-size: 1.25rem; }
+    #decision-block .candidate-grid {
       grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
       gap: 10px;
     }
-    #decision .candidate { padding: 18px 14px; font-size: 1.1rem; }
+    #decision-block .candidate { padding: 18px 14px; font-size: 1.1rem; }
     #result .outcome { font-size: 2rem; letter-spacing: 2px; }
     #result .detail { font-size: 1.05rem; }
     button.big {
@@ -599,10 +606,10 @@
     #reveal .role-name { font-size: 2rem; letter-spacing: 2.5px; }
     #reveal .word-value { font-size: 2.6rem; }
     #reveal .gate { padding: 36px 22px; font-size: 1rem; }
-    #decision .candidate-grid {
+    #decision-block .candidate-grid {
       grid-template-columns: 1fr 1fr; gap: 8px;
     }
-    #decision .candidate { padding: 16px 10px; font-size: 1rem; }
+    #decision-block .candidate { padding: 16px 10px; font-size: 1rem; }
     #result .outcome { font-size: 1.7rem; }
     #result .detail { font-size: 1rem; margin-bottom: 24px; }
     button.big {
@@ -711,32 +718,29 @@
   </div>
 </section>
 
-<!-- ============ DISCUSSION ============ -->
+<!-- ============ DISCUSSION + DECISION (mismo momento) ============ -->
 <section id="discussion" class="screen">
   <div class="kicker" id="disc-round">Semana 1</div>
   <h1 style="font-size:1.8rem; letter-spacing:1px;">Repartan cartas y discutan</h1>
   <div class="note" style="margin-top:24px;">
-    Cada enfermo terminal toma 5 cartas del mazo y elige una en secreto. Cuando todos revelen su carta a la vez, el sacerdote inicia la cuenta regresiva y escucha en silencio buscando empatía verdadera — el poseído carece de ella.
+    Cada enfermo terminal toma 5 cartas del mazo y elige una en secreto. Cuando todos revelen su carta a la vez, el sacerdote inicia la cuenta regresiva: el tiempo corre mientras decide a quién salvar.
   </div>
   <div class="timer-box">
     <div class="timer-display" id="timer-display-disc">--:--</div>
-    <button class="timer-start" id="timer-start-btn" onclick="startTimer()">▶ Iniciar la cuenta regresiva</button>
+    <button class="timer-start" id="timer-start-btn" onclick="startDecision()">▶ Iniciar la cuenta regresiva</button>
     <div class="timer-note" id="timer-note-disc"></div>
   </div>
-  <button class="big" onclick="showDecision()" style="margin-top:8px;">El sacerdote decide</button>
-</section>
 
-<!-- ============ DECISION ============ -->
-<section id="decision" class="screen">
-  <div class="kicker" id="dec-round">Semana 1</div>
-  <div class="timer-display" id="timer-display-dec">--:--</div>
-  <h1 style="font-size:1.8rem; letter-spacing:1px;">¿A quién salvás?</h1>
-  <div class="candidate-grid" id="candidates"></div>
-  <div class="actions">
-    <button class="big" id="confirm-save-btn" onclick="confirmSave()" disabled>Salvar</button>
-    <button class="agua-bendita" id="estatuilla-btn" onclick="useEstatuilla()">
-      Usar Estatuilla · saltear esta semana
-    </button>
+  <!-- Opciones de decisión: aparecen al iniciar la cuenta regresiva -->
+  <div id="decision-block" style="display:none;">
+    <div class="decision-q">¿A quién salvás?</div>
+    <div class="candidate-grid" id="candidates"></div>
+    <div class="actions">
+      <button class="big" id="confirm-save-btn" onclick="confirmSave()" disabled>Salvar</button>
+      <button class="agua-bendita" id="estatuilla-btn" onclick="useEstatuilla()">
+        Usar Estatuilla · saltear esta semana
+      </button>
+    </div>
   </div>
 </section>
 
@@ -1073,6 +1077,7 @@ function hideReveal() {
 // ============ DISCUSSION ============
 function goDiscussion() {
   document.getElementById('disc-round').textContent = `Semana ${state.round}`;
+  document.getElementById('decision-block').style.display = 'none';
   resetTimer();
   show('discussion');
 }
@@ -1091,12 +1096,10 @@ function fmtTime(secs) {
   return `${m}:${String(s).padStart(2, '0')}`;
 }
 function paintTimer(text, cls) {
-  ['timer-display-disc', 'timer-display-dec'].forEach(id => {
-    const el = document.getElementById(id);
-    el.textContent = text;
-    el.classList.remove('running', 'warning', 'ended');
-    if (cls) el.classList.add(cls);
-  });
+  const el = document.getElementById('timer-display-disc');
+  el.textContent = text;
+  el.classList.remove('running', 'warning', 'ended');
+  if (cls) el.classList.add(cls);
 }
 function resetTimer() {
   clearInterval(timerInterval);
@@ -1107,6 +1110,26 @@ function resetTimer() {
   if (note) note.textContent = '';
   const btn = document.getElementById('timer-start-btn');
   if (btn) { btn.disabled = false; btn.textContent = '▶ Iniciar la cuenta regresiva'; }
+}
+// Iniciar la cuenta regresiva y, en el mismo momento, mostrar las opciones de decisión.
+function startDecision() {
+  const grid = document.getElementById('candidates');
+  grid.innerHTML = '';
+  state.selectedCandidate = null;
+  document.getElementById('confirm-save-btn').disabled = true;
+  document.getElementById('estatuilla-btn').style.display = state.estatuillaUsed ? 'none' : '';
+  // Candidatos: jugadores no-sacerdote y no-salvados.
+  state.players
+    .filter(p => p.role !== 'sacerdote' && !p.saved)
+    .forEach(p => {
+      const btn = document.createElement('button');
+      btn.className = 'candidate';
+      btn.textContent = p.name;
+      btn.onclick = () => selectCandidate(p.name, btn);
+      grid.appendChild(btn);
+    });
+  document.getElementById('decision-block').style.display = '';
+  startTimer();
 }
 function startTimer() {
   // El gesto del botón desbloquea el audio en el navegador.
@@ -1189,26 +1212,6 @@ function bellStrike(t0) {
     osc.start(t0);
     osc.stop(t0 + p.d + 0.1);
   });
-}
-function showDecision() {
-  document.getElementById('dec-round').textContent = `Semana ${state.round}`;
-  const grid = document.getElementById('candidates');
-  grid.innerHTML = '';
-  state.selectedCandidate = null;
-  document.getElementById('confirm-save-btn').disabled = true;
-  // Mostrar/ocultar botón de estatuilla
-  document.getElementById('estatuilla-btn').style.display = state.estatuillaUsed ? 'none' : '';
-  // Candidatos: jugadores no-sacerdote y no-salvados
-  state.players
-    .filter(p => p.role !== 'sacerdote' && !p.saved)
-    .forEach(p => {
-      const btn = document.createElement('button');
-      btn.className = 'candidate';
-      btn.textContent = p.name;
-      btn.onclick = () => selectCandidate(p.name, btn);
-      grid.appendChild(btn);
-    });
-  show('decision');
 }
 function useEstatuilla() {
   if (state.estatuillaUsed) return;
