@@ -157,6 +157,31 @@
     user-select: none;
   }
 
+  /* ====== Devoción (mismo paso para todos; oculta la habilidad del poseído) ====== */
+  #reveal .devotion {
+    display: flex; flex-direction: column; align-items: center;
+    width: 100%; max-width: 420px;
+  }
+  #reveal .devotion-hint {
+    font-size: 0.95rem; color: var(--muted); font-style: italic;
+    margin-bottom: 16px; min-height: 1.4em; line-height: 1.4;
+    max-width: 360px;
+  }
+  #reveal .devotion-buttons {
+    display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+  }
+  #reveal .devotion-btn {
+    background: transparent;
+    color: var(--ink);
+    border: 1.5px solid var(--gold);
+    padding: 14px 24px;
+    font-family: var(--serif-display);
+    font-size: 1rem; letter-spacing: 1.5px; text-transform: uppercase;
+    font-weight: 500;
+    box-shadow: none;
+  }
+  #reveal .devotion-btn:hover { background: var(--gold); color: #fff; box-shadow: 0 3px 10px rgba(176,138,60,0.3); }
+
   /* ====== Discussion ====== */
   #discussion .word-card {
     background: var(--card-bg); border: 1px solid var(--line);
@@ -166,6 +191,42 @@
   #discussion .word-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); }
   #discussion .word-value { font-size: 2.4rem; color: var(--accent); margin: 6px 0 0; font-weight: bold; }
   #discussion .note { color: var(--muted); font-size: 0.95rem; max-width: 480px; margin: 0 auto 24px; }
+
+  /* ====== Temporizador ====== */
+  .timer-box {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 14px; margin: 8px 0 28px;
+  }
+  .timer-display {
+    font-family: var(--serif-display);
+    font-size: 3.4rem; font-weight: 600;
+    color: var(--ink); letter-spacing: 3px;
+    font-variant-numeric: tabular-nums;
+    min-width: 3.5em; text-align: center;
+    transition: color .3s;
+  }
+  .timer-display.running { color: var(--gold); }
+  .timer-display.warning { color: var(--accent); }
+  .timer-display.ended {
+    color: var(--accent);
+    animation: toll 0.6s ease-in-out 3;
+  }
+  @keyframes toll {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.12); opacity: 0.65; }
+  }
+  .timer-start {
+    background: transparent;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    font-family: var(--serif-display);
+    font-size: 0.95rem; letter-spacing: 1.5px; text-transform: uppercase;
+    padding: 12px 22px;
+  }
+  .timer-start:hover { background: var(--accent); color: #fff; }
+  .timer-note { color: var(--muted); font-size: 0.85rem; font-style: italic; }
+  /* Versión compacta en la pantalla de decisión */
+  #decision .timer-display { font-size: 2rem; margin-bottom: 4px; }
 
   /* ====== Decision ====== */
   #decision .candidate-grid {
@@ -585,7 +646,17 @@
     <div class="role-name" id="reveal-role">—</div>
     <div class="word-label">Palabra</div>
     <div class="word-value" id="reveal-word">—</div>
-    <button class="big" onclick="hideReveal()">Ocultar y pasar</button>
+
+    <!-- Devoción: dos botones idénticos para todos los jugadores -->
+    <div class="devotion" id="devotion">
+      <div class="devotion-hint" id="devotion-hint">Hacé tu devoción en silencio antes de pasar.</div>
+      <div class="devotion-buttons">
+        <button class="devotion-btn" onclick="doDevotion('comulgar')">Comulgar</button>
+        <button class="devotion-btn" onclick="doDevotion('persignarse')">Persignarse</button>
+      </div>
+    </div>
+
+    <button class="big" id="reveal-hide-btn" onclick="hideReveal()" style="display:none;">Ocultar y pasar</button>
   </div>
 </section>
 
@@ -594,14 +665,20 @@
   <div class="kicker" id="disc-round">Semana 1</div>
   <h1 style="font-size:1.8rem; letter-spacing:1px;">Repartan cartas y discutan</h1>
   <div class="note" style="margin-top:24px;">
-    Cada enfermo terminal toma 5 cartas del mazo y elige una en secreto. Cuando todos hayan elegido, revelan a la vez y discuten. El sacerdote escucha en silencio buscando empatía verdadera detrás de las palabras — el poseído carece de ella.
+    Cada enfermo terminal toma 5 cartas del mazo y elige una en secreto. Cuando todos revelen su carta a la vez, el sacerdote inicia la cuenta regresiva y escucha en silencio buscando empatía verdadera — el poseído carece de ella.
   </div>
-  <button class="big" onclick="showDecision()" style="margin-top:32px;">El sacerdote decide</button>
+  <div class="timer-box">
+    <div class="timer-display" id="timer-display-disc">--:--</div>
+    <button class="timer-start" id="timer-start-btn" onclick="startTimer()">▶ Iniciar la cuenta regresiva</button>
+    <div class="timer-note" id="timer-note-disc"></div>
+  </div>
+  <button class="big" onclick="showDecision()" style="margin-top:8px;">El sacerdote decide</button>
 </section>
 
 <!-- ============ DECISION ============ -->
 <section id="decision" class="screen">
   <div class="kicker" id="dec-round">Semana 1</div>
+  <div class="timer-display" id="timer-display-dec">--:--</div>
   <h1 style="font-size:1.8rem; letter-spacing:1px;">¿A quién salvás?</h1>
   <div class="candidate-grid" id="candidates"></div>
   <div class="actions">
@@ -710,7 +787,47 @@ const PAIRS = [
   { real: "cárcel", poseido: "monasterio" },
   { real: "biblioteca", poseido: "museo" },
   { real: "lluvia", poseido: "nieve" },
-  { real: "amanecer", poseido: "atardecer" }
+  { real: "amanecer", poseido: "atardecer" },
+  { real: "abuelo", poseido: "anciano" },
+  { real: "bebé", poseido: "cachorro" },
+  { real: "rey", poseido: "emperador" },
+  { real: "pirata", poseido: "marinero" },
+  { real: "ladrón", poseido: "espía" },
+  { real: "juez", poseido: "árbitro" },
+  { real: "enfermera", poseido: "niñera" },
+  { real: "cartero", poseido: "repartidor" },
+  { real: "sol", poseido: "luna" },
+  { real: "estrella", poseido: "cometa" },
+  { real: "nube", poseido: "humo" },
+  { real: "trueno", poseido: "relámpago" },
+  { real: "cueva", poseido: "túnel" },
+  { real: "puente", poseido: "muralla" },
+  { real: "faro", poseido: "torre" },
+  { real: "desván", poseido: "sótano" },
+  { real: "oveja", poseido: "cabra" },
+  { real: "zorro", poseido: "coyote" },
+  { real: "delfín", poseido: "foca" },
+  { real: "pingüino", poseido: "gaviota" },
+  { real: "rana", poseido: "sapo" },
+  { real: "elefante", poseido: "rinoceronte" },
+  { real: "jirafa", poseido: "avestruz" },
+  { real: "camello", poseido: "llama" },
+  { real: "tortuga", poseido: "caracol" },
+  { real: "trompeta", poseido: "saxofón" },
+  { real: "violín", poseido: "cello" },
+  { real: "martillo", poseido: "hacha" },
+  { real: "paraguas", poseido: "sombrilla" },
+  { real: "cama", poseido: "hamaca" },
+  { real: "zapato", poseido: "bota" },
+  { real: "sombrero", poseido: "corona" },
+  { real: "avión", poseido: "helicóptero" },
+  { real: "tren", poseido: "subte" },
+  { real: "bicicleta", poseido: "moto" },
+  { real: "barco", poseido: "submarino" },
+  { real: "hospital", poseido: "hotel" },
+  { real: "mercado", poseido: "feria" },
+  { real: "escuela", poseido: "universidad" },
+  { real: "naranja", poseido: "limón" }
 ];
 
 // ============ Estado ============
@@ -725,6 +842,7 @@ function freshState() {
     currentReveal: null,
     selectedCandidate: null,
     estatuillaUsed: false,
+    comulgarUsed: false,
   };
 }
 
@@ -843,11 +961,33 @@ function showReveal() {
     roleEl.textContent = 'Poseído';
     wordEl.textContent = state.pair.poseido;
   }
+  // Reset de la devoción: todos los jugadores ven los mismos dos botones.
+  // Solo el poseído (con la habilidad disponible) recibe la pista privada.
+  const hint = document.getElementById('devotion-hint');
+  if (player.role === 'poseido' && !state.comulgarUsed) {
+    hint.textContent = 'Si comulgás, verás la palabra de tus hermanos esta semana (solo una vez en la partida).';
+  } else {
+    hint.textContent = 'Hacé tu devoción en silencio antes de pasar.';
+  }
+  document.getElementById('devotion').style.display = '';
+  document.getElementById('reveal-hide-btn').style.display = 'none';
   show('reveal');
 }
 function unlockReveal() {
   document.getElementById('reveal-gate').style.display = 'none';
   document.getElementById('reveal-content').style.display = '';
+}
+function doDevotion(choice) {
+  const player = state.players.find(p => p.name === state.currentReveal);
+  // El poseído que comulga (y aún tiene la habilidad) ve la palabra real.
+  // Para todos los demás, comulgar y persignarse son gestos idénticos sin efecto:
+  // mismo número de pasos, así nadie puede deducir el uso de la habilidad observando.
+  if (choice === 'comulgar' && player.role === 'poseido' && !state.comulgarUsed) {
+    document.getElementById('reveal-word').textContent = state.pair.real;
+    state.comulgarUsed = true;
+  }
+  document.getElementById('devotion').style.display = 'none';
+  document.getElementById('reveal-hide-btn').style.display = '';
 }
 function hideReveal() {
   goPass();
@@ -856,7 +996,103 @@ function hideReveal() {
 // ============ DISCUSSION ============
 function goDiscussion() {
   document.getElementById('disc-round').textContent = `Semana ${state.round}`;
+  resetTimer();
   show('discussion');
+}
+
+// ============ TEMPORIZADOR ============
+let timerInterval = null;
+let timerRemaining = 0;
+let audioCtx = null;
+
+function activeNonPriestCount() {
+  return state.players.filter(p => p.role !== 'sacerdote' && !p.saved).length;
+}
+function fmtTime(secs) {
+  const m = Math.floor(secs / 60);
+  const s = secs % 60;
+  return `${m}:${String(s).padStart(2, '0')}`;
+}
+function paintTimer(text, cls) {
+  ['timer-display-disc', 'timer-display-dec'].forEach(id => {
+    const el = document.getElementById(id);
+    el.textContent = text;
+    el.classList.remove('running', 'warning', 'ended');
+    if (cls) el.classList.add(cls);
+  });
+}
+function resetTimer() {
+  clearInterval(timerInterval);
+  timerInterval = null;
+  timerRemaining = 0;
+  paintTimer('--:--', null);
+  const note = document.getElementById('timer-note-disc');
+  if (note) note.textContent = '';
+  const btn = document.getElementById('timer-start-btn');
+  if (btn) { btn.disabled = false; btn.textContent = '▶ Iniciar la cuenta regresiva'; }
+}
+function startTimer() {
+  // El gesto del botón desbloquea el audio en el navegador.
+  if (!audioCtx) {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (AC) audioCtx = new AC();
+  }
+  if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+
+  clearInterval(timerInterval);
+  const players = activeNonPriestCount();
+  timerRemaining = 15 * players;
+  const btn = document.getElementById('timer-start-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Corriendo…';
+  document.getElementById('timer-note-disc').textContent =
+    `${players} jugadores en juego · 15 s cada uno`;
+  paintTimer(fmtTime(timerRemaining), 'running');
+
+  timerInterval = setInterval(() => {
+    timerRemaining--;
+    if (timerRemaining <= 0) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      paintTimer('0:00', 'ended');
+      playBell(3);
+    } else {
+      paintTimer(fmtTime(timerRemaining), timerRemaining <= 10 ? 'warning' : 'running');
+    }
+  }, 1000);
+}
+// Campanada de iglesia sintetizada con Web Audio (parciales inarmónicos + decay).
+function playBell(tolls = 1) {
+  if (!audioCtx) return;
+  for (let i = 0; i < tolls; i++) {
+    bellStrike(audioCtx.currentTime + i * 1.5);
+  }
+}
+function bellStrike(t0) {
+  // Parciales típicos de una campana: hum, prime, tierce, quint, nominal.
+  const partials = [
+    { f: 165, g: 0.55, d: 4.0 },
+    { f: 330, g: 0.40, d: 3.2 },
+    { f: 396, g: 0.22, d: 2.4 },
+    { f: 495, g: 0.18, d: 2.0 },
+    { f: 660, g: 0.16, d: 1.6 },
+    { f: 990, g: 0.10, d: 1.0 },
+  ];
+  const master = audioCtx.createGain();
+  master.gain.value = 0.9;
+  master.connect(audioCtx.destination);
+  partials.forEach(p => {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = p.f;
+    gain.gain.setValueAtTime(0.0001, t0);
+    gain.gain.exponentialRampToValueAtTime(p.g, t0 + 0.008);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0 + p.d);
+    osc.connect(gain).connect(master);
+    osc.start(t0);
+    osc.stop(t0 + p.d + 0.1);
+  });
 }
 function showDecision() {
   document.getElementById('dec-round').textContent = `Semana ${state.round}`;
@@ -881,6 +1117,7 @@ function showDecision() {
 function useEstatuilla() {
   if (state.estatuillaUsed) return;
   if (!confirm('¿Usar Estatuilla? Pasás la semana sin salvar a nadie. Solo se puede usar una vez por partida.')) return;
+  clearInterval(timerInterval); timerInterval = null;
   state.estatuillaUsed = true;
   const resultEl = document.getElementById('result');
   resultEl.classList.remove('is-correct', 'is-wrong', 'is-win');
@@ -908,6 +1145,7 @@ function selectCandidate(name, btn) {
 
 // ============ RESULT ============
 function confirmSave() {
+  clearInterval(timerInterval); timerInterval = null;
   const name = state.selectedCandidate;
   const player = state.players.find(p => p.name === name);
   const resultEl = document.getElementById('result');
@@ -976,6 +1214,7 @@ function nextRound() {
   goPass();
 }
 function resetGame() {
+  clearInterval(timerInterval); timerInterval = null;
   state = null;
   document.getElementById('players-input').innerHTML = '';
   for (let i = 0; i < 4; i++) addPlayerInput();

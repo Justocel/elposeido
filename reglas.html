@@ -326,7 +326,8 @@
     <li><a href="#roles">Los tres roles</a></li>
     <li><a href="#ronda">Cómo se juega una semana</a></li>
     <li><a href="#ganar">Cómo gana cada bando</a></li>
-    <li><a href="#estatuilla">La Estatuilla</a></li>
+    <li><a href="#estatuilla">La Estatuilla (sacerdote)</a></li>
+    <li><a href="#comulgar">Comulgar (poseído)</a></li>
     <li><a href="#espectadores">Salvados = espectadores</a></li>
     <li><a href="#ejemplo">Ejemplo de una semana</a></li>
     <li><a href="#consejos">Consejos por rol</a></li>
@@ -386,6 +387,7 @@
         <li>Ve una palabra <em>relacionada pero distinta</em> a la real.</li>
         <li>Sabe que es el poseído.</li>
         <li>Toma 5 cartas y elige una para hacerse pasar por enfermo.</li>
+        <li>Una vez por partida puede <em>Comulgar</em>: ver la palabra real (ver más abajo).</li>
         <li>Gana si el sacerdote lo salva una sola vez.</li>
       </ul>
     </div>
@@ -397,7 +399,7 @@
   <ol class="steps">
     <li>
       <span class="step-title">Reveal de palabra (privado)</span>
-      La app va pasando entre los jugadores. Cada uno ve, en secreto, su rol y la palabra de esta semana. El sacerdote y los enfermos ven la <em>misma</em> palabra (por ejemplo <strong>playa</strong>). El poseído ve una <em>palabra-vecina</em> (por ejemplo <strong>desierto</strong>): comparte atributos con la real pero no es igual.
+      La app va pasando entre los jugadores. Cada uno ve, en secreto, su rol y la palabra de esta semana. El sacerdote y los enfermos ven la <em>misma</em> palabra (por ejemplo <strong>playa</strong>). El poseído ve una <em>palabra-vecina</em> (por ejemplo <strong>desierto</strong>): comparte atributos con la real pero no es igual. Antes de pasar, todos hacen una <em>devoción</em> (Comulgar o Persignarse): para casi todos es un gesto sin efecto, pero le permite al poseído usar su habilidad sin que se note (ver más abajo).
     </li>
     <li>
       <span class="step-title">Reparto de cartas</span>
@@ -408,8 +410,8 @@
       Cuando todos eligieron, dan vuelta su carta al mismo tiempo. Las demás cartas de la mano vuelven al mazo (no se descartan, vuelven a entrar el próximo reparto).
     </li>
     <li>
-      <span class="step-title">Discusión</span>
-      Los jugadores pueden hablar libremente: justificar su carta, sospechar de otros, defenderse. El sacerdote <em>escucha en silencio</em> buscando empatía verdadera detrás de las palabras — el poseído carece de ella y se delata si pone atención.
+      <span class="step-title">Discusión (con cuenta regresiva)</span>
+      Apenas se revelan las cartas, el sacerdote inicia la <em>cuenta regresiva</em> en la app: dura <strong>15 segundos por cada jugador en juego</strong> (sin contar al sacerdote). Mientras corre, los jugadores hablan libremente — justifican su carta, sospechan, se defienden — y el sacerdote <em>escucha en silencio</em> buscando empatía verdadera. Cuando el tiempo se agota, suena una <em>campana de iglesia</em> y debe decidir ya.
     </li>
     <li>
       <span class="step-title">Decisión del sacerdote</span>
@@ -439,6 +441,16 @@
     <div class="label">Una vez por partida</div>
     <p>Si en una semana el sacerdote no se decide — ninguna carta lo convence lo suficiente — puede <strong>usar la Estatuilla</strong>. Esa semana <em>nadie es salvado</em>: la partida pasa a la siguiente semana sin avanzar ni perder. Es un acto ceremonial: la estatuilla queda inclinada en reverencia y la decisión se posterga.</p>
     <p style="margin-top:8px;"><strong>Solo se puede usar una vez en toda la partida.</strong> Después, el sacerdote tiene que elegir sí o sí.</p>
+  </div>
+</section>
+
+<section id="comulgar">
+  <h2>Comulgar — habilidad del poseído</h2>
+  <div class="callout" style="background:#f3eee6; border-color:var(--accent);">
+    <div class="label" style="color:var(--accent);">Una vez por partida</div>
+    <p>El poseído normalmente ve una palabra-vecina, no la real. Una vez por partida puede <strong>Comulgar</strong>: en la pantalla de devoción (que aparece para <em>todos</em> los jugadores), el poseído elige "Comulgar" y la app le muestra la palabra real de sus hermanos esa semana.</p>
+    <p style="margin-top:8px;"><strong>Es indetectable por la app:</strong> todos los jugadores pasan por la misma pantalla de devoción con los mismos dos botones y la misma cantidad de toques. Nadie puede saber, mirando el celular de costado, si el poseído comulgó o no. Lo único que puede delatarlo es su <em>comportamiento</em>: si de pronto sabe demasiado.</p>
+    <p style="margin-top:8px; color:var(--muted); font-size:0.95rem;">Consecuencia para los enfermos: que alguien juegue una carta perfecta no prueba que sea inocente — podría ser el poseído que comulgó esta semana.</p>
   </div>
 </section>
 
@@ -539,6 +551,12 @@
 
     <dt>¿Puedo pasar y no jugar carta?</dt>
     <dd>No. Si sos enfermo o poseído, tenés que jugar una carta cada semana.</dd>
+
+    <dt>¿Es obligatorio el temporizador?</dt>
+    <dd>No, pero le da ritmo al juego. Lo arranca el sacerdote apenas se revelan las cartas. Dura 15 segundos por jugador en juego (sin contar al sacerdote) y suena una campana al terminar. Si el sacerdote prefiere tomarse su tiempo, puede no iniciarlo.</dd>
+
+    <dt>Si soy el poseído, ¿cuándo conviene Comulgar?</dt>
+    <dd>Es tu única vez en la partida, así que guardalo para una semana en la que estés perdido o muy presionado. Una vez que ves la palabra real, podés jugar una carta perfecta — pero ojo, saber demasiado de golpe también puede delatarte.</dd>
 
     <dt>¿Cuánto dura una partida?</dt>
     <dd>Entre 15 y 35 minutos según cantidad de jugadores. Una partida tiene tantas semanas como enfermos haya (más una si se usa la Estatuilla).</dd>
