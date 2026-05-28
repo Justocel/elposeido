@@ -232,6 +232,39 @@
   /* Versión compacta en la pantalla de decisión */
   #decision .timer-display { font-size: 2rem; margin-bottom: 4px; }
 
+  /* ====== Tabla de puntajes ====== */
+  .scoreboard {
+    width: 100%; max-width: 340px; margin: 8px 0 24px;
+  }
+  .scoreboard-title {
+    font-family: var(--serif-display);
+    text-transform: uppercase; letter-spacing: 2px;
+    font-size: 0.85rem; color: var(--muted);
+    margin-bottom: 10px; text-align: center;
+  }
+  .scoreboard-table {
+    width: 100%; border-collapse: collapse;
+    background: var(--card-bg);
+    border: 1px solid var(--line); border-radius: 8px;
+    overflow: hidden;
+  }
+  .scoreboard-table td {
+    padding: 9px 14px; border-bottom: 1px solid var(--line);
+    font-size: 1rem;
+  }
+  .scoreboard-table tr:last-child td { border-bottom: none; }
+  .scoreboard-table .rank {
+    color: var(--muted); width: 2.2em; text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .scoreboard-table .sb-name { text-align: left; color: var(--ink); }
+  .scoreboard-table .sb-pts {
+    text-align: right; font-weight: bold; color: var(--accent);
+    font-variant-numeric: tabular-nums; width: 3em;
+  }
+  /* En la pantalla de derrota (fondo oscuro) la tabla se mantiene legible */
+  #result.is-wrong .scoreboard-title { color: #c0a8a8; }
+
   /* ====== Decision ====== */
   #decision .candidate-grid {
     display: grid;
@@ -632,6 +665,12 @@
   <button class="add-btn" onclick="addPlayerInput()">+ Agregar jugador</button>
   <div class="count-note" id="count-note">Mínimo 4 jugadores</div>
   <button class="big" id="start-btn" onclick="startGame()" disabled>Comenzar partida</button>
+
+  <!-- Tabla de puntajes acumulada (visible si ya se jugó alguna partida) -->
+  <div class="scoreboard" id="scoreboard-setup-box" style="display:none;">
+    <div class="scoreboard-title">Tabla de puntajes</div>
+    <table class="scoreboard-table" id="scoreboard-setup"></table>
+  </div>
 </section>
 
 <!-- ============ PASS COMPUTER ============ -->
@@ -733,6 +772,13 @@
   </div>
 
   <div class="roles-list" id="roles-list" style="display:none;"></div>
+
+  <!-- Tabla de puntajes: visible solo al terminar la partida -->
+  <div class="scoreboard" id="scoreboard-result-box" style="display:none;">
+    <div class="scoreboard-title">Tabla de puntajes</div>
+    <table class="scoreboard-table" id="scoreboard-result"></table>
+  </div>
+
   <button class="big" id="result-next" onclick="nextRound()">Siguiente semana</button>
   <button class="ghost" onclick="resetGame()" style="margin-top:12px;">Nueva partida</button>
 </section>
@@ -844,6 +890,9 @@ const PAIRS = [
 
 // ============ Estado ============
 let state = null;
+// Persisten entre partidas hasta refrescar la página (no usa localStorage).
+let scoreboard = {};   // { nombre: puntos acumulados }
+let lastPlayers = [];  // nombres de la última partida, para rellenar el setup
 function freshState() {
   return {
     players: [],         // {name, role:'sacerdote'|'enfermo'|'poseido', saved:false}
@@ -919,6 +968,8 @@ function updateStartBtn() {
 function startGame() {
   const inputs = document.querySelectorAll('#players-input input');
   const names = [...inputs].map(i => i.value.trim()).filter(n => n.length > 0);
+  // Los nombres quedan para la próxima partida (persisten hasta refrescar la página).
+  lastPlayers = [...names];
   state = freshState();
   // Asignar roles: 1 sacerdote, 1 poseído, resto enfermos
   const shuffled = shuffle(names);
@@ -926,11 +977,27 @@ function startGame() {
     let role = 'enfermo';
     if (i === 0) role = 'sacerdote';
     else if (i === 1) role = 'poseido';
-    return { name, role, saved: false };
+    return { name, role, saved: false, savedRound: null };
   });
   state.pair = pickPair();
   state.revealQueue = buildRevealQueue();
   goPass();
+}
+// Rellena los inputs de setup con los nombres de la última partida (o 4 vacíos).
+function populateSetupInputs() {
+  const wrap = document.getElementById('players-input');
+  wrap.innerHTML = '';
+  const names = lastPlayers.length ? lastPlayers : ['', '', '', ''];
+  names.forEach(n => addPlayerInput(n));
+  updateStartBtn();
+  // Mostrar la tabla de puntajes acumulada si ya hubo partidas.
+  const box = document.getElementById('scoreboard-setup-box');
+  if (Object.keys(scoreboard).length > 0) {
+    renderScoreboard('scoreboard-setup');
+    box.style.display = '';
+  } else {
+    box.style.display = 'none';
+  }
 }
 
 function buildRevealQueue() {
@@ -1152,6 +1219,7 @@ function useEstatuilla() {
   resultEl.classList.remove('is-correct', 'is-wrong', 'is-win');
   document.getElementById('roles-list').style.display = 'none';
   document.getElementById('candle-scene').style.display = 'none';
+  document.getElementById('scoreboard-result-box').style.display = 'none';
   document.getElementById('result-kicker').textContent = `Semana ${state.round}`;
   document.getElementById('result-outcome').textContent = 'Estatuilla';
   const remaining = state.players.filter(p => p.role === 'enfermo' && !p.saved).length;
@@ -1182,6 +1250,7 @@ function confirmSave() {
   document.getElementById('roles-list').style.display = 'none';
   document.getElementById('candle-scene').style.display = 'none';
   document.getElementById('statuilla-scene').style.display = 'none';
+  document.getElementById('scoreboard-result-box').style.display = 'none';
 
   if (player.role === 'poseido') {
     // Sacerdote pierde
@@ -1189,11 +1258,14 @@ function confirmSave() {
     document.getElementById('result-kicker').textContent = 'Fin de la partida';
     document.getElementById('result-outcome').textContent = 'El poseído gana';
     document.getElementById('result-detail').textContent = `Salvaste a ${name}, pero era el poseído.`;
+    awardPoints('poseido');
     showRolesList();
+    showScoreboard('scoreboard-result');
     document.getElementById('result-next').style.display = 'none';
   } else {
     // Enfermo terminal salvado
     player.saved = true;
+    player.savedRound = state.round;
     const remainingEnfermos = state.players.filter(p => p.role === 'enfermo' && !p.saved).length;
     if (remainingEnfermos === 0) {
       // Sacerdote gana
@@ -1201,7 +1273,9 @@ function confirmSave() {
       document.getElementById('result-kicker').textContent = 'Fin de la partida';
       document.getElementById('result-outcome').textContent = 'Ganan sacerdote y enfermos terminales';
       document.getElementById('result-detail').textContent = `Salvaste a todos los enfermos terminales sin caer en la trampa del poseído.`;
+      awardPoints('priest');
       showRolesList();
+      showScoreboard('scoreboard-result');
       document.getElementById('result-next').style.display = 'none';
     } else {
       resultEl.classList.add('is-correct');
@@ -1236,6 +1310,45 @@ function roleLabel(r) {
   if (r === 'poseido') return 'poseído';
   return 'enfermo terminal';
 }
+
+// ============ PUNTAJES ============
+// T = rondas que duró la partida. Sacerdote y poseído ganadores suman T.
+// Cada enfermo salvado suma T - (ronda en que lo salvaron) + 1: más rápido, más puntos.
+function awardPoints(winner) {
+  const T = state.round;
+  state.players.forEach(p => {
+    let pts = 0;
+    if (p.role === 'sacerdote') {
+      if (winner === 'priest') pts = T;
+    } else if (p.role === 'poseido') {
+      if (winner === 'poseido') pts = T;
+    } else if (p.role === 'enfermo' && p.savedRound) {
+      pts = Math.max(0, T - p.savedRound + 1);
+    }
+    // Todo jugador que participó queda en la tabla, aunque sume 0 esta partida.
+    scoreboard[p.name] = (scoreboard[p.name] || 0) + pts;
+  });
+}
+function renderScoreboard(tableId) {
+  const table = document.getElementById(tableId);
+  if (!table) return;
+  table.innerHTML = '';
+  Object.entries(scoreboard)
+    .sort((a, b) => b[1] - a[1])
+    .forEach(([name, pts], i) => {
+      const tr = document.createElement('tr');
+      const r = document.createElement('td'); r.className = 'rank'; r.textContent = i + 1;
+      const n = document.createElement('td'); n.className = 'sb-name'; n.textContent = name;
+      const p = document.createElement('td'); p.className = 'sb-pts'; p.textContent = pts;
+      tr.append(r, n, p);
+      table.appendChild(tr);
+    });
+}
+function showScoreboard(tableId) {
+  renderScoreboard(tableId);
+  const box = document.getElementById(tableId).closest('.scoreboard');
+  if (box) box.style.display = '';
+}
 function nextRound() {
   state.round++;
   state.pair = pickPair();
@@ -1245,13 +1358,12 @@ function nextRound() {
 function resetGame() {
   clearInterval(timerInterval); timerInterval = null;
   state = null;
-  document.getElementById('players-input').innerHTML = '';
-  for (let i = 0; i < 4; i++) addPlayerInput();
+  populateSetupInputs();
   show('intro');
 }
 
 // ============ Init ============
-for (let i = 0; i < 4; i++) addPlayerInput();
+populateSetupInputs();
 </script>
 </body>
 </html>

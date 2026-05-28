@@ -329,6 +329,7 @@
     <li><a href="#estatuilla">La Estatuilla (sacerdote)</a></li>
     <li><a href="#persignarse">Persignarse (poseído)</a></li>
     <li><a href="#espectadores">Salvados = espectadores</a></li>
+    <li><a href="#puntajes">Puntajes</a></li>
     <li><a href="#ejemplo">Ejemplo de una semana</a></li>
     <li><a href="#consejos">Consejos por rol</a></li>
     <li><a href="#faq">Preguntas frecuentes</a></li>
@@ -464,6 +465,23 @@
     <li>No puede volver a ser elegido (ya está a salvo).</li>
   </ul>
   <p>Esto hace que el poseído tenga cada semana menos enfermos detrás de los cuales esconderse, y que las semanas finales sean las más tensas.</p>
+</section>
+
+<section id="puntajes">
+  <h2>Puntajes</h2>
+  <p>La app lleva una <strong>tabla de puntajes</strong> que se acumula partida a partida (mientras no refresques la página). Los nombres quedan cargados para la próxima partida, y los puntos se suman a cada nombre. Llamemos <strong>T</strong> a la cantidad de semanas que duró la partida.</p>
+  <div class="win-grid">
+    <div class="win-card priest-win">
+      <div class="who">Sacerdote</div>
+      <p>Si gana (salva a todos los enfermos), suma <strong>T</strong> puntos.</p>
+    </div>
+    <div class="win-card possessed-win">
+      <div class="who">Poseído</div>
+      <p>Si gana (lo salvan), suma <strong>T</strong> puntos.</p>
+    </div>
+  </div>
+  <p style="margin-top:14px;">Cada <strong>enfermo terminal</strong> suma según en qué semana lo salvaron: si lo salvan en la semana <em>R</em>, gana <strong>T − R + 1</strong> puntos. Es decir, salvado en la primera semana suma T; en la segunda, T − 1; y así. <em>Cuanto más rápido logra que lo salven, mayor es la recompensa.</em></p>
+  <p style="color:var(--muted); font-size:0.95rem;">Ejemplo: una partida que duró 4 semanas. El enfermo salvado en la semana 1 suma 4; el de la semana 2 suma 3; el de la 4, suma 1. El sacerdote, si ganó, suma 4. El poseído suma 4 solo si logró que lo salvaran.</p>
 </section>
 
 <section id="ejemplo">
