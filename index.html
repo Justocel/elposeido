@@ -131,57 +131,78 @@
   /* ====== Role reveal ====== */
   /* Fondo idéntico para todos los roles para que no se delate por reflejo */
   #reveal { background: var(--bg); }
+  /* El contenido se centra como columna: así el botón único queda al medio */
+  #reveal-content {
+    display: flex; flex-direction: column; align-items: center;
+    width: 100%; max-width: 420px; margin: 0 auto;
+  }
   #reveal .role-tag {
-    font-size: 0.9rem; text-transform: uppercase; letter-spacing: 3px;
-    margin-bottom: 16px; color: var(--muted);
+    font-size: 1rem; text-transform: uppercase; letter-spacing: 3px;
+    margin-bottom: 14px; color: var(--muted);
   }
   #reveal .role-name {
     font-family: var(--serif-display);
-    font-size: 3rem; margin: 0 0 32px; letter-spacing: 4px;
+    font-size: 3.2rem; margin: 0 0 36px; letter-spacing: 4px;
     font-weight: 600; color: var(--ink);
-    text-transform: uppercase;
+    text-transform: uppercase; line-height: 1.1;
   }
 
-  #reveal .word-label { font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; opacity: 0.7; }
+  #reveal .word-label {
+    font-size: 1rem; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--muted);
+  }
   #reveal .word-value {
-    font-size: 4rem; margin: 8px 0 40px; font-weight: bold;
-    font-family: Georgia, serif;
+    font-size: 4.2rem; margin: 10px 0 8px; font-weight: 600;
+    font-family: var(--serif-body); color: var(--accent);
+    line-height: 1.1;
+  }
+  #reveal #word-block.reveal-anim {
+    animation: word-in .45s cubic-bezier(.2, .7, .3, 1) both;
+  }
+  @keyframes word-in {
+    0%   { opacity: 0; transform: scale(0.86) translateY(6px); }
+    100% { opacity: 1; transform: none; }
   }
   #reveal .gate {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     padding: 60px 40px;
-    border: 2px dashed currentColor;
+    border: 2px dashed var(--gold);
     border-radius: 12px;
-    opacity: 0.7;
+    color: var(--muted);
     cursor: pointer;
     user-select: none;
+    transition: background .15s, color .15s;
   }
+  #reveal .gate:hover { background: rgba(176,138,60,0.08); color: var(--ink); }
 
   /* ====== Devoción: todos comulgan para ver la palabra; el poseído puede persignarse (habilidad) ====== */
   #reveal .devotion {
     display: flex; flex-direction: column; align-items: stretch;
-    gap: 10px; width: 100%; max-width: 340px;
-    margin-top: 8px;
+    gap: 12px; width: 100%; max-width: 360px;
+    margin: 12px auto 0;
   }
   #reveal .devotion-btn {
     width: 100%;
-    display: flex; flex-direction: column; align-items: center; gap: 3px;
-    background: transparent;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    background: var(--card-bg);
     color: var(--ink);
-    border: 1.5px solid var(--gold);
-    padding: 15px 24px;
+    border: 2px solid var(--gold);
+    border-radius: 8px;
+    padding: 18px 28px;
     font-family: var(--serif-display);
-    font-size: 1.15rem; letter-spacing: 2px; text-transform: uppercase;
-    font-weight: 500;
-    box-shadow: none;
+    font-size: 1.35rem; letter-spacing: 2px; text-transform: uppercase;
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: background .15s, color .15s, box-shadow .2s, transform .08s;
   }
-  #reveal .devotion-btn:hover { background: var(--gold); color: #fff; }
+  #reveal .devotion-btn:hover { background: var(--gold); color: #fff; box-shadow: 0 4px 14px rgba(176,138,60,0.3); }
+  #reveal .devotion-btn:active { transform: scale(0.98); }
   #reveal .devotion-btn .btn-sub {
     font-family: var(--serif-body);
-    font-size: 0.82rem; letter-spacing: 0.3px; text-transform: none;
-    color: var(--muted); font-style: italic;
+    font-size: 0.95rem; letter-spacing: 0.3px; text-transform: none;
+    color: var(--muted); font-style: italic; font-weight: 400;
   }
-  #reveal .devotion-btn:hover .btn-sub { color: rgba(255,255,255,0.88); }
+  #reveal .devotion-btn:hover .btn-sub { color: rgba(255,255,255,0.9); }
   /* Habilidad del poseído: otro color, inmediatamente debajo del de comulgar */
   #reveal .devotion-btn.persignarse { border-color: #5a6b7a; }
   #reveal .devotion-btn.persignarse:hover { background: #5a6b7a; }
@@ -229,6 +250,14 @@
   }
   .timer-start:hover { background: var(--accent); color: #fff; }
   .timer-note { color: var(--muted); font-size: 0.85rem; font-style: italic; }
+  .mute-btn {
+    background: transparent; border: none; box-shadow: none;
+    font-size: 1.4rem; line-height: 1; padding: 6px 10px;
+    cursor: pointer; opacity: 0.65;
+    transition: opacity .15s, transform .08s;
+  }
+  .mute-btn:hover { background: transparent; box-shadow: none; opacity: 1; }
+  .mute-btn:active { transform: scale(0.9); }
 
   /* ====== Tabla de puntajes ====== */
   .scoreboard {
@@ -273,6 +302,11 @@
     font-size: 1.4rem; letter-spacing: 1.5px; text-transform: uppercase;
     color: var(--accent); margin: 4px 0 0; font-weight: 500;
   }
+  #decision-block .blessed-list {
+    color: var(--muted); font-size: 0.95rem; font-style: italic;
+    margin: 10px 0 0; max-width: 420px;
+  }
+  #decision-block .blessed-list .name { color: var(--green); font-style: normal; }
   #decision-block .candidate-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -639,6 +673,18 @@
     button { min-height: 44px; }
     .candidate { min-height: 50px; }
   }
+
+  /* Accesibilidad: respetar la preferencia de movimiento reducido */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+  /* El foco se mueve a la pantalla activa al navegar; sin contorno visible molesto */
+  .screen:focus { outline: none; }
 </style>
 </head>
 <body>
@@ -690,7 +736,7 @@
 
 <!-- ============ ROLE REVEAL ============ -->
 <section id="reveal" class="screen">
-  <div id="reveal-gate" class="gate" onclick="unlockReveal()">Tocá para ver tu rol</div>
+  <div id="reveal-gate" class="gate" role="button" tabindex="0" aria-label="Tocá para ver tu rol" onclick="unlockReveal()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();unlockReveal();}">Tocá para ver tu rol</div>
   <div id="reveal-content" style="display:none;">
     <div class="role-tag">Tu rol</div>
     <div class="role-name" id="reveal-role">—</div>
@@ -729,11 +775,13 @@
     <div class="timer-display" id="timer-display-disc">--:--</div>
     <button class="timer-start" id="timer-start-btn" onclick="startDecision()">▶ Iniciar la cuenta regresiva</button>
     <div class="timer-note" id="timer-note-disc"></div>
+    <button class="mute-btn" id="mute-btn" onclick="toggleMute()" aria-label="Silenciar sonido" aria-pressed="false">🔔</button>
   </div>
 
   <!-- Opciones de decisión: aparecen al iniciar la cuenta regresiva -->
   <div id="decision-block" style="display:none;">
     <div class="decision-q">¿A quién salvás?</div>
+    <div class="blessed-list" id="blessed-list" style="display:none;"></div>
     <div class="candidate-grid" id="candidates"></div>
     <div class="actions">
       <button class="big" id="confirm-save-btn" onclick="confirmSave()" disabled>Salvar</button>
@@ -922,7 +970,11 @@ function shuffle(arr) {
 }
 function show(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  const el = document.getElementById(id);
+  el.classList.add('active');
+  // Mover el foco a la pantalla activa: los lectores de pantalla anuncian el cambio.
+  el.setAttribute('tabindex', '-1');
+  try { el.focus({ preventScroll: true }); } catch (e) {}
 }
 function pickPair() {
   const available = PAIRS.filter((_, i) => !state.usedPairs.has(i));
@@ -939,8 +991,8 @@ function addPlayerInput(value = '') {
   const row = document.createElement('div');
   row.className = 'row';
   row.innerHTML = `
-    <input type="text" placeholder="Nombre" value="${value}" oninput="updateStartBtn()">
-    <button class="rm-btn" onclick="this.parentElement.remove(); updateStartBtn();">×</button>
+    <input type="text" placeholder="Nombre" value="${value}" oninput="updateStartBtn()" aria-label="Nombre de jugador">
+    <button class="rm-btn" onclick="this.parentElement.remove(); updateStartBtn();" aria-label="Quitar jugador">×</button>
   `;
   wrap.appendChild(row);
   updateStartBtn();
@@ -1067,7 +1119,11 @@ function doDevotion(choice) {
     state.persignarseUsed = true;
   }
   document.getElementById('devotion').style.display = 'none';
-  document.getElementById('word-block').style.display = '';
+  const wb = document.getElementById('word-block');
+  wb.style.display = '';
+  wb.classList.remove('reveal-anim');
+  void wb.offsetWidth; // reiniciar la animación
+  wb.classList.add('reveal-anim');
   document.getElementById('reveal-hide-btn').style.display = '';
 }
 function hideReveal() {
@@ -1086,6 +1142,16 @@ function goDiscussion() {
 let timerInterval = null;
 let timerRemaining = 0;
 let audioCtx = null;
+let muted = false;
+
+function toggleMute() {
+  muted = !muted;
+  document.querySelectorAll('.mute-btn').forEach(btn => {
+    btn.textContent = muted ? '🔕' : '🔔';
+    btn.setAttribute('aria-label', muted ? 'Activar sonido' : 'Silenciar sonido');
+    btn.setAttribute('aria-pressed', muted ? 'true' : 'false');
+  });
+}
 
 function activeNonPriestCount() {
   return state.players.filter(p => p.role !== 'sacerdote' && !p.saved).length;
@@ -1118,6 +1184,22 @@ function startDecision() {
   state.selectedCandidate = null;
   document.getElementById('confirm-save-btn').disabled = true;
   document.getElementById('estatuilla-btn').style.display = state.estatuillaUsed ? 'none' : '';
+  // Recordatorio para el sacerdote: a quiénes ya bendijo.
+  const blessed = state.players.filter(p => p.saved).map(p => p.name);
+  const bl = document.getElementById('blessed-list');
+  if (blessed.length) {
+    bl.innerHTML = 'Ya bendecidos: ';
+    blessed.forEach((nm, i) => {
+      const span = document.createElement('span');
+      span.className = 'name';
+      span.textContent = nm;
+      bl.appendChild(span);
+      if (i < blessed.length - 1) bl.appendChild(document.createTextNode(', '));
+    });
+    bl.style.display = '';
+  } else {
+    bl.style.display = 'none';
+  }
   // Candidatos: jugadores no-sacerdote y no-salvados.
   state.players
     .filter(p => p.role !== 'sacerdote' && !p.saved)
@@ -1156,6 +1238,8 @@ function startTimer() {
       timerInterval = null;
       paintTimer('0:00', 'ended');
       playBell(3);
+      // Vibración como aviso independiente del volumen (suena igual con sonido silenciado).
+      if (navigator.vibrate) navigator.vibrate([300, 120, 300, 120, 300]);
     } else {
       paintTimer(fmtTime(timerRemaining), timerRemaining <= 10 ? 'warning' : 'running');
       // Cuenta regresiva sonora en los últimos 10 s; más urgente en los últimos 3.
@@ -1165,7 +1249,7 @@ function startTimer() {
 }
 // Tic de cuenta regresiva: golpe corto. urgent = más agudo y fuerte (últimos segundos).
 function playTick(urgent) {
-  if (!audioCtx) return;
+  if (!audioCtx || muted) return;
   const t0 = audioCtx.currentTime;
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
@@ -1182,7 +1266,7 @@ function playTick(urgent) {
 }
 // Campanada de iglesia sintetizada con Web Audio (parciales inarmónicos + decay).
 function playBell(tolls = 1) {
-  if (!audioCtx) return;
+  if (!audioCtx || muted) return;
   for (let i = 0; i < tolls; i++) {
     bellStrike(audioCtx.currentTime + i * 1.5);
   }
