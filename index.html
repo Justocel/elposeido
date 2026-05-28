@@ -157,30 +157,34 @@
     user-select: none;
   }
 
-  /* ====== Devoción (mismo paso para todos; oculta la habilidad del poseído) ====== */
+  /* ====== Devoción: todos comulgan para ver la palabra; el poseído puede persignarse (habilidad) ====== */
   #reveal .devotion {
-    display: flex; flex-direction: column; align-items: center;
-    width: 100%; max-width: 420px;
-  }
-  #reveal .devotion-hint {
-    font-size: 0.95rem; color: var(--muted); font-style: italic;
-    margin-bottom: 16px; min-height: 1.4em; line-height: 1.4;
-    max-width: 360px;
-  }
-  #reveal .devotion-buttons {
-    display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+    display: flex; flex-direction: column; align-items: stretch;
+    gap: 10px; width: 100%; max-width: 340px;
+    margin-top: 8px;
   }
   #reveal .devotion-btn {
+    width: 100%;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
     background: transparent;
     color: var(--ink);
     border: 1.5px solid var(--gold);
-    padding: 14px 24px;
+    padding: 15px 24px;
     font-family: var(--serif-display);
-    font-size: 1rem; letter-spacing: 1.5px; text-transform: uppercase;
+    font-size: 1.15rem; letter-spacing: 2px; text-transform: uppercase;
     font-weight: 500;
     box-shadow: none;
   }
-  #reveal .devotion-btn:hover { background: var(--gold); color: #fff; box-shadow: 0 3px 10px rgba(176,138,60,0.3); }
+  #reveal .devotion-btn:hover { background: var(--gold); color: #fff; }
+  #reveal .devotion-btn .btn-sub {
+    font-family: var(--serif-body);
+    font-size: 0.82rem; letter-spacing: 0.3px; text-transform: none;
+    color: var(--muted); font-style: italic;
+  }
+  #reveal .devotion-btn:hover .btn-sub { color: rgba(255,255,255,0.88); }
+  /* Habilidad del poseído: otro color, inmediatamente debajo del de comulgar */
+  #reveal .devotion-btn.persignarse { border-color: #5a6b7a; }
+  #reveal .devotion-btn.persignarse:hover { background: #5a6b7a; }
 
   /* ====== Discussion ====== */
   #discussion .word-card {
@@ -644,16 +648,24 @@
   <div id="reveal-content" style="display:none;">
     <div class="role-tag">Tu rol</div>
     <div class="role-name" id="reveal-role">—</div>
-    <div class="word-label">Palabra</div>
-    <div class="word-value" id="reveal-word">—</div>
 
-    <!-- Devoción: dos botones idénticos para todos los jugadores -->
+    <!-- Antes de ver la palabra, todos aprietan un botón. -->
     <div class="devotion" id="devotion">
-      <div class="devotion-hint" id="devotion-hint">Hacé tu devoción en silencio antes de pasar.</div>
-      <div class="devotion-buttons">
-        <button class="devotion-btn" onclick="doDevotion('comulgar')">Comulgar</button>
-        <button class="devotion-btn" onclick="doDevotion('persignarse')">Persignarse</button>
-      </div>
+      <button class="devotion-btn comulgar" onclick="doDevotion('comulgar')">
+        Comulgar
+        <span class="btn-sub">ver palabra</span>
+      </button>
+      <!-- Solo visible para el poseído: habilidad para ver la palabra real. -->
+      <button class="devotion-btn persignarse" id="persignarse-btn" onclick="doDevotion('persignarse')" style="display:none;">
+        Persignarse
+        <span class="btn-sub">ver palabra</span>
+      </button>
+    </div>
+
+    <!-- La palabra, oculta hasta apretar un botón. -->
+    <div id="word-block" style="display:none;">
+      <div class="word-label">Palabra</div>
+      <div class="word-value" id="reveal-word">—</div>
     </div>
 
     <button class="big" id="reveal-hide-btn" onclick="hideReveal()" style="display:none;">Ocultar y pasar</button>
@@ -842,7 +854,7 @@ function freshState() {
     currentReveal: null,
     selectedCandidate: null,
     estatuillaUsed: false,
-    comulgarUsed: false,
+    persignarseUsed: false,
   };
 }
 
@@ -948,7 +960,7 @@ function showReveal() {
   const player = state.players.find(p => p.name === name);
   document.getElementById('reveal-gate').style.display = '';
   document.getElementById('reveal-content').style.display = 'none';
-  // Cargar contenido (oculto hasta tocar)
+  // El rol se muestra ya; la palabra recién aparece al apretar un botón.
   const roleEl = document.getElementById('reveal-role');
   const wordEl = document.getElementById('reveal-word');
   if (player.role === 'sacerdote') {
@@ -959,17 +971,15 @@ function showReveal() {
     wordEl.textContent = state.pair.real;
   } else {
     roleEl.textContent = 'Poseído';
-    wordEl.textContent = state.pair.poseido;
+    wordEl.textContent = state.pair.poseido; // por defecto la palabra-vecina
   }
-  // Reset de la devoción: todos los jugadores ven los mismos dos botones.
-  // Solo el poseído (con la habilidad disponible) recibe la pista privada.
-  const hint = document.getElementById('devotion-hint');
-  if (player.role === 'poseido' && !state.comulgarUsed) {
-    hint.textContent = 'Si comulgás, verás la palabra de tus hermanos esta semana (solo una vez en la partida).';
-  } else {
-    hint.textContent = 'Hacé tu devoción en silencio antes de pasar.';
-  }
+  // Todos ven "Comulgar". Solo el poseído (con la habilidad disponible) ve además
+  // "Persignarse" justo debajo, de otro color: un solo toque para todos, así
+  // nadie puede deducir el uso de la habilidad observando la cantidad de pasos.
+  const persignarse = document.getElementById('persignarse-btn');
+  persignarse.style.display = (player.role === 'poseido' && !state.persignarseUsed) ? '' : 'none';
   document.getElementById('devotion').style.display = '';
+  document.getElementById('word-block').style.display = 'none';
   document.getElementById('reveal-hide-btn').style.display = 'none';
   show('reveal');
 }
@@ -979,14 +989,14 @@ function unlockReveal() {
 }
 function doDevotion(choice) {
   const player = state.players.find(p => p.name === state.currentReveal);
-  // El poseído que comulga (y aún tiene la habilidad) ve la palabra real.
-  // Para todos los demás, comulgar y persignarse son gestos idénticos sin efecto:
-  // mismo número de pasos, así nadie puede deducir el uso de la habilidad observando.
-  if (choice === 'comulgar' && player.role === 'poseido' && !state.comulgarUsed) {
+  // Persignarse es la habilidad del poseído: revela la palabra real (1 vez por partida).
+  // Comulgar muestra la palabra propia (la real para todos, la vecina para el poseído).
+  if (choice === 'persignarse' && player.role === 'poseido' && !state.persignarseUsed) {
     document.getElementById('reveal-word').textContent = state.pair.real;
-    state.comulgarUsed = true;
+    state.persignarseUsed = true;
   }
   document.getElementById('devotion').style.display = 'none';
+  document.getElementById('word-block').style.display = '';
   document.getElementById('reveal-hide-btn').style.display = '';
 }
 function hideReveal() {
