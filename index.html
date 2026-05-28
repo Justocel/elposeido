@@ -658,7 +658,7 @@
       <!-- Solo visible para el poseído: habilidad para ver la palabra real. -->
       <button class="devotion-btn persignarse" id="persignarse-btn" onclick="doDevotion('persignarse')" style="display:none;">
         Persignarse
-        <span class="btn-sub">ver palabra</span>
+        <span class="btn-sub">ver palabra real este turno</span>
       </button>
     </div>
 
@@ -1068,8 +1068,27 @@ function startTimer() {
       playBell(3);
     } else {
       paintTimer(fmtTime(timerRemaining), timerRemaining <= 10 ? 'warning' : 'running');
+      // Cuenta regresiva sonora en los últimos 10 s; más urgente en los últimos 3.
+      if (timerRemaining <= 10) playTick(timerRemaining <= 3);
     }
   }, 1000);
+}
+// Tic de cuenta regresiva: golpe corto. urgent = más agudo y fuerte (últimos segundos).
+function playTick(urgent) {
+  if (!audioCtx) return;
+  const t0 = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = urgent ? 'square' : 'triangle';
+  osc.frequency.value = urgent ? 880 : 520;
+  const peak = urgent ? 0.26 : 0.13;
+  const dur = urgent ? 0.13 : 0.06;
+  gain.gain.setValueAtTime(0.0001, t0);
+  gain.gain.exponentialRampToValueAtTime(peak, t0 + 0.005);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  osc.connect(gain).connect(audioCtx.destination);
+  osc.start(t0);
+  osc.stop(t0 + dur + 0.02);
 }
 // Campanada de iglesia sintetizada con Web Audio (parciales inarmónicos + decay).
 function playBell(tolls = 1) {
