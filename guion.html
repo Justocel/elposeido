@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>El Poseído — Guion del presentador</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #f5f1ea; --ink: #2a2420; --accent: #8b1e1e;
+    --muted: #6b5d52; --line: #d4c9b8; --gold: #b08a3c;
+    --green: #4a6b3a; --card-bg: #fff;
+  }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 11pt; line-height: 1.5;
+  }
+  .wrap { max-width: 800px; margin: 0 auto; padding: 20mm 18mm; }
+
+  header {
+    text-align: center;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 10mm; margin-bottom: 10mm;
+  }
+  h1 {
+    font-family: 'Cinzel', serif;
+    color: var(--accent);
+    font-size: 26pt;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  header .sub {
+    color: var(--muted); font-style: italic;
+    font-size: 12pt; margin-top: 2mm;
+  }
+
+  /* Resumen / plan general */
+  .overview {
+    background: var(--card-bg);
+    border-left: 4px solid var(--accent);
+    padding: 6mm 7mm;
+    margin-bottom: 10mm;
+  }
+  .overview h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 11pt; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 3mm;
+  }
+  .overview table {
+    width: 100%; border-collapse: collapse; font-size: 10.5pt;
+  }
+  .overview table td {
+    padding: 2mm 3mm; border-bottom: 0.5px solid var(--line);
+  }
+  .overview table tr:last-child td { border: 0; }
+  .overview table td:first-child {
+    font-family: 'Cinzel', serif;
+    color: var(--gold); width: 25%;
+    letter-spacing: 1px; text-transform: uppercase;
+    font-size: 9.5pt;
+  }
+  .overview table td:nth-child(2) {
+    width: 18%; color: var(--accent); font-weight: bold;
+  }
+  .overview table td:nth-child(4) {
+    width: 14%; text-align: right; color: var(--muted);
+    font-style: italic; font-size: 9.5pt;
+  }
+
+  /* Persona section */
+  .persona {
+    margin: 12mm 0 8mm;
+    padding-top: 7mm;
+    border-top: 1.5px solid var(--accent);
+    page-break-inside: avoid;
+  }
+  .persona-header {
+    display: flex; align-items: baseline; gap: 4mm;
+    margin-bottom: 5mm;
+  }
+  .persona-num {
+    font-family: 'Cinzel', serif;
+    color: white; background: var(--accent);
+    width: 11mm; height: 11mm; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14pt; font-weight: 600;
+    flex-shrink: 0;
+  }
+  .persona-name {
+    font-family: 'Cinzel', serif;
+    font-size: 16pt; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--accent);
+    font-weight: 600;
+  }
+  .persona-role {
+    color: var(--muted); font-style: italic;
+    font-size: 11pt; margin-left: auto;
+  }
+
+  /* Tip de apertura del bloque */
+  .persona-intro {
+    background: #faf4e3;
+    border: 1px solid var(--gold);
+    border-radius: 4px;
+    padding: 4mm 6mm;
+    margin-bottom: 6mm;
+    font-style: italic;
+    color: var(--ink);
+    font-size: 10.5pt;
+  }
+  .persona-intro strong { color: var(--accent); font-style: normal; }
+
+  /* Slide block */
+  .slide-block {
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    padding: 5mm 6mm;
+    margin-bottom: 5mm;
+    page-break-inside: avoid;
+  }
+  .slide-block .slide-head {
+    display: flex; align-items: baseline; gap: 4mm;
+    border-bottom: 0.5px solid var(--line);
+    padding-bottom: 2mm; margin-bottom: 3mm;
+  }
+  .slide-block .slide-num {
+    font-family: 'Cinzel', serif;
+    color: var(--gold);
+    font-size: 9pt; letter-spacing: 2px;
+    text-transform: uppercase;
+    flex-shrink: 0;
+  }
+  .slide-block .slide-title {
+    font-family: 'Cinzel', serif;
+    color: var(--accent);
+    font-size: 11pt; letter-spacing: 1.5px;
+    text-transform: uppercase; font-weight: 600;
+    flex: 1;
+  }
+  .slide-block .duration {
+    color: var(--muted); font-style: italic;
+    font-size: 9.5pt;
+  }
+  .slide-block .say-label {
+    font-family: 'Cinzel', serif;
+    font-size: 8pt; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--muted);
+    margin-top: 2mm;
+  }
+  .slide-block ul {
+    list-style: none; padding-left: 0;
+    margin-top: 1mm;
+  }
+  .slide-block li {
+    position: relative;
+    padding-left: 5mm;
+    margin: 1.5mm 0;
+    font-size: 10.5pt; line-height: 1.45;
+  }
+  .slide-block li::before {
+    content: '›';
+    position: absolute; left: 0; top: 0;
+    color: var(--accent);
+    font-size: 12pt; line-height: 1;
+  }
+  .slide-block li em { color: var(--accent); font-style: italic; }
+  .slide-block .quote {
+    background: #faf6ee;
+    border-left: 2px solid var(--gold);
+    padding: 2mm 4mm;
+    margin: 2mm 0;
+    font-style: italic; color: #4a3f30;
+    font-size: 10pt; line-height: 1.45;
+  }
+
+  /* Handoff */
+  .handoff {
+    margin-top: 6mm; padding: 3mm 5mm;
+    background: #f3eee6;
+    border: 1px dashed var(--accent);
+    border-radius: 4px;
+    font-style: italic;
+    color: var(--accent);
+    font-size: 10pt;
+  }
+  .handoff strong { font-style: normal; letter-spacing: 1px; }
+
+  /* Demo final */
+  .demo {
+    margin-top: 14mm;
+    padding: 7mm 8mm;
+    background: linear-gradient(180deg, #faf4e3, #fff);
+    border: 1.5px solid var(--gold);
+    border-radius: 6px;
+    page-break-before: always;
+  }
+  .demo h2 {
+    font-family: 'Cinzel', serif;
+    color: var(--gold);
+    font-size: 14pt; letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 4mm;
+  }
+  .demo h3 {
+    font-family: 'Cinzel', serif;
+    color: var(--accent);
+    font-size: 10pt; letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin: 4mm 0 1.5mm;
+  }
+  .demo p, .demo li { font-size: 10.5pt; line-height: 1.5; }
+  .demo ul { padding-left: 5mm; margin: 1mm 0; }
+  .demo strong { color: var(--accent); }
+
+  /* Tips finales */
+  .tips {
+    margin-top: 10mm;
+    padding: 6mm 7mm;
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: 5px;
+  }
+  .tips h2 {
+    font-family: 'Cinzel', serif;
+    color: var(--accent);
+    font-size: 12pt; letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600; margin-bottom: 3mm;
+  }
+  .tips ul { list-style: none; padding-left: 0; }
+  .tips li {
+    padding-left: 5mm; position: relative;
+    margin: 1.5mm 0; font-size: 10.5pt; line-height: 1.45;
+  }
+  .tips li::before {
+    content: '✦'; position: absolute; left: 0;
+    color: var(--gold); font-size: 9pt;
+  }
+
+  @media print {
+    body { background: white; }
+    .wrap { padding: 14mm 16mm; }
+    .persona, .demo, .tips, .slide-block { page-break-inside: avoid; }
+    @page { size: A4; margin: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Guion del presentador</h1>
+  <div class="sub">El Poseído · Grupo Un sueño · Creatividad ITBA · 4 de junio de 2026</div>
+</header>
+
+<div class="overview">
+  <h2>Cómo nos repartimos</h2>
+  <table>
+    <tr><td>Persona 1</td><td>Slides 1–3</td><td>Intro y premisa narrativa</td><td>≈ 1:30</td></tr>
+    <tr><td>Persona 2</td><td>Slide 4</td><td>Mapa conceptual</td><td>≈ 1:30</td></tr>
+    <tr><td>Persona 3</td><td>Slides 5–8</td><td>Roles y palabra-vecina</td><td>≈ 2:00</td></tr>
+    <tr><td>Persona 4</td><td>Slides 9–13</td><td>Una semana en 4 pasos</td><td>≈ 2:00</td></tr>
+    <tr><td>Persona 5</td><td>Slides 14–19</td><td>Habilidades, ambiente y demo</td><td>≈ 2:00</td></tr>
+  </table>
+  <p style="margin-top:3mm; font-size:10pt; font-style:italic; color:var(--muted);">
+    Total de exposición: ≈ 9 minutos. Después: ronda demo de ~10 minutos en el aula.
+  </p>
+</div>
+
+<!-- ========= PERSONA 1 ========= -->
+<section class="persona">
+  <div class="persona-header">
+    <div class="persona-num">1</div>
+    <div class="persona-name">Persona 1</div>
+    <div class="persona-role">intro y premisa narrativa</div>
+  </div>
+
+  <div class="persona-intro">
+    Arrancás vos. <strong>Apagan las luces antes de empezar</strong> y prenden la vela en el centro de la mesa. Cuando esté listo el ambiente, das paso a la primera slide.
+  </div>
+
+  <div class="slide-block">
+    <div class="slide-head">
+      <div class="slide-num">Slide 1</div>
+      <div class="slide-title">Título</div>
+      <div class="duration">~ 20 s</div>
+    </div>
+    <div class="say-label">qué decir</div>
+    <ul>
+      <li>Saludo y nombre del equipo: <em>"Somos el grupo Un sueño"</em>.</li>
+      <li>Anunciás el juego: <em>"Les vamos a presentar El Poseído, un juego de empatía e intuición."</em></li>
+      <li>Antes de pasar: <em>"Necesitamos que el aula esté lo más oscura posible y en silencio."</em></li>
+    </ul>
+  </div>
+
+  <div class="slide-block">
+    <div class="slide-head">
+      <div class="slide-num">Slide 2</div>
+      <div class="slide-title">La premisa (la escena)</div>
+      <div class="duration">~ 35 s</div>
+    </div>
+    <div class="say-label">qué decir</div>
+    <ul>
+      <li>Plantás la historia: hay un hospicio, un sacerdote, enfermos terminales, y entre ellos un poseído escondido.</li>
+      <li>Mencionás los dos cuadros que inspiraron el ambiente: <em>la lección de anatomía de Rembrandt</em> (hombres alrededor de un cuerpo, buscando una verdad).</li>
+      <li>Resaltás la urgencia: <em>"al sacerdote le quedan dos meses antes de tener que irse."</em></li>
+    </ul>
+  </div>
+
+  <div class="slide-block">
+    <div class="slide-head">
+      <div class="slide-num">Slide 3</div>
+      <div class="slide-title">Su única arma</div>
+      <div class="duration">~ 35 s</div>
+    </div>
+    <div class="say-label">qué decir</div>
+    <ul>
+      <li>El sacerdote no puede leer mentes — pero sabe que <em>el poseído carece de empatía</em>.</li>
+      <li>Su única arma es <em>la inteligencia</em>: leer la grieta entre lo que el poseído dice y lo que sabe.</li>
+      <li>Cierre con una frase que prepare el mapa: <em>"De ahí salió el juego. Y de ocho conceptos que nos dieron al principio."</em></li>
+    </ul>
+  </div>
+
+  <div class="handoff">
+    <strong>Cue de pase a Persona 2:</strong> <em>"[Nombre] les muestra cómo cada uno de esos conceptos terminó adentro del juego."</em>
+  </div>
+</section>
+
+<!-- ========= PERSONA 2 ========= -->
+<section class="persona">
+  <div class="persona-header">
+    <div class="persona-num">2</div>
+    <div class="persona-name">Persona 2</div>
+    <div class="persona-role">mapa conceptual</div>
+  </div>
+
+  <div class="persona-intro">
+    Te toca la slide más densa visualmente. <strong>No la leas entera</strong>: pasá por los 9 conceptos rápido, agrupándolos.
+  </div>
+
+  <div class="slide-block">
+    <div class="slide-head">
+      <div class="slide-num">Slide 4</div>
+      <div class="slide-title">De los post-its al juego</div>
+      <div class="duration">~ 1:30</div>
+    </div>
+    <div class="say-label">qué decir, agrupado</div>
+    <ul>
+      <li><strong>Los roles</strong> (3 conceptos): "Sacerdote y enfermedad terminal nos dieron los dos roles principales. Inteligencia se volvió el arma única del sacerdote."</li>
+      <li><strong>La mecánica</strong> (2 conceptos): "Comparación + falta de empatía son el corazón del bluff. El sacerdote compara las cartas y justificaciones buscando dónde falla la empatía del poseído."</li>
+      <li><strong>El tiempo</strong> (1 concepto): "Quedan dos meses para irme se tradujo a semanas — cada ronda del juego es una semana."</li>
+      <li><strong>La ambientación</strong> (1 concepto): "Lluvia es atmósfera: cae en la pantalla de la app, suena de fondo en el aula."</li>
+      <li><strong>Los cuadros</strong> (2 imágenes): "Rembrandt nos dio la composición — mesa, círculo de hombres mirando. Dalí nos dio la imagen de las dos figuras, una inclinada en reverencia: esa es la habilidad de la <em>Estatuilla</em>."</li>
+      <li>Cierre: <em>"De los 8 post-its que nos tocaron, dejamos uno afuera — 'un sueño' — porque es el nombre del equipo."</em></li>
+    </ul>
+  </div>
+
+  <div class="handoff">
+    <strong>Cue de pase a Persona 3:</strong> <em>"[Nombre] les explica los tres roles que aparecieron del mapa."</em>
+  </div>
+</section>
+
+<!-- ========= PERSONA 3 ========= -->
+<section class="persona">
+  <div class="persona-header">
+    <div class="persona-num">3</div>
+    <div class="persona-name">Persona 3</div>
+    <div class="persona-role">roles y palabra-vecina</div>
+  </div>
+
+  <div class="persona-intro">
+    Cuatro slides: los tres roles, uno por uno, y la mecánica clave. Frase corta por slide.
+  </div>
+
+  <div class="slide-block">
+    <div class="slide-head">
+      <div class="slide-num">Slide 5</div>
+      <div class="slide-title">Sacerdote</div>
+      <div class="duration">~ 25 s</div>
+    </div>
+    <div class="say-label">qué decir</div>
+    <ul>
+      <li>"El sacerdote es el único juez. Ve la palabra real cada semana."</li>
+      <li>"No toma cartas. No habla durante la discusión. Solo escucha buscando empatía verdadera."</li>
+      <li>"Y al final decide a quién salvar."</li>
+    </ul>
+  </div>
+
+  <div class="slide-block">
+    <div class="slide-head">
+      <div class="slide-num">Slide 6</div>
+      <div class="slide-title">Enfermo terminal</div>
+      <div class="duration">~ 25 s</div>
+    </div>
+    <div class="say-label">qué decir</div>
+    <ul>
+      <li>"De 2 a 6 jugadores son enfermos terminales. Saben la palabra real."</li>
+      <li>"Toman 5 cartas, eligen una que asocie y la juegan en secreto."</li>
+      <li>"Si los salvan, quedan a salvo y se sientan como espectadores."</li>
+    </ul>
+  </div>
+
+  <div class="slide-block">
+    <div class="slide-head">
+      <div class="slide-num">Slide 7</div>
+      <div class="slide-title">Poseído</div>
+      <div class="duration">~ 30 s</div>
+    </div>
+    <div class="say-label">qué decir</div>
+    <ul>
+      <li>"Hay un solo poseído. Es el infiltrado."</li>
+      <li>"Sabe que es el poseído — pero ve una palabra distinta a la real. Una <em>palabra vecina</em>."</li>
+      <li>"Tiene que fingir empatía con una palabra que no conoce. Y gana si lo salvan una sola vez."</li>
+    </ul>
+  </div>
+
+  <div class="slide-block">
+    <div class="slide-head">
+      <div class="slide-num">Slide 8</div>
+      <div class="slide-title">La palabra-vecina</div>
+      <div class="duration">~ 40 s</div>
+    </div>
+    <div class="say-label">qué decir</div>
+    <ul>
+      <li>"Esta es la mecánica clave. Mostrá el ejemplo: el sacerdote y los enfermos ven <em>PLAYA</em>. El poseído ve <em>DESIERTO</em>."</li>
+      <li>"Las dos palabras comparten cosas — arena, calor, horizonte, soledad — pero no son iguales."</li>
+      <li>"El poseído tiene que asociar cartas que parezcan calzar con playa, sin haberla visto. La grieta entre lo que dice y lo que sabe es lo que el sacerdote busca."</li>
+    </ul>
+    <div class="quote">Ejemplo concreto: si la palabra es playa, una buena carta es <em>ola</em> con justificación "el sonido del mar". El poseído podría jugar <em>calor</em> con "es lo que sentís ahí" — válido para playa y desierto. Eso lo delata.</div>
+  </div>
+
+  <div class="handoff">
+    <strong>Cue de pase a Persona 4:</strong> <em>"Y todo esto, ¿cómo se juega una ronda? [Nombre] les muestra los 4 pasos."</em>
+  </div>
+</section>
+
+<!-- ========= PERSONA 4 ========= -->
+<section class="persona">
+  <div class="persona-header">
+    <div class="persona-num">4</div>
+    <div class="persona-name">Persona 4</div>
+    <div class="persona-role">una semana en 4 pasos</div>
+  </div>
+
+  <div class="persona-intro">
+    Slide overview + 4 pasos detallados. Mantené el ritmo: cada paso ~ 20 segundos. Es el flujo que después van a ver en la demo.
+  </div>
+
+  <div class="slide-block">
+    <div class="slide-head">
+      <div class="slide-num">Slide 9</div>
+      <div class="slide-title">Overview de la semana</div>
+      <div class="duration">~ 20 s</div>
+    </div>
+    <div class="say-label">qué decir</div>
+    <ul>
+      <li>"Una semana en el juego son cuatro pasos: reveal privado, cartas en secreto, revelación simultánea, y cuenta regresiva más decisión."</li>
+      <li>"Veámoslos uno por uno."</li>
+    </ul>
+  </div>
+
+  <div class="slide-block">
+    <div class="slide-head">
+      <div class="slide-num">Slide 10</div>
+      <div class="slide-title">Paso 1 — Reveal privado</div>
+      <div class="duration">~ 25 s</div>
+    </div>
+    <div class="say-label">qué decir</div>
+    <ul>
+      <li>"La app pasa de mano en mano. Cada jugador ve su rol en secreto."</li>
+      <li>"Aprieta <em>Comulgar</em> para ver la palabra. Mismos pasos para todos — pero al poseído le aparece, justo debajo, un botón de otro color: <em>Persignarse</em>. Si lo aprieta una vez por partida, ve la palabra real de los demás. Como hace los mismos toques que los otros, nadie se da cuenta."</li>
+    </ul>
+  </div>
+
+  <div class="slide-block">
+    <div class="slide-head">
+      <div class="slide-num">Slide 11</div>
+      <div class="slide-title">Paso 2 — Cartas en secreto</div>
+      <div class="duration">~ 20 s</div>
+    </div>
+    <div class="say-label">qué decir</div>
+    <ul>
+      <li>"Cada enfermo y el poseído toma 5 cartas del mazo de papel."</li>
+      <li>"Mira su mano en secreto, elige una que asocie con la palabra, y la deja boca abajo. El sacerdote no toma cartas."</li>
+    </ul>
+  </div>
+
+  <div class="slide-block">
+    <div class="slide-head">
+      <div class="slide-num">Slide 12</div>
+      <div class="slide-title">Paso 3 — Revelación simultánea</div>
+      <div class="duration">~ 20 s</div>
+    </div>
+    <div class="say-label">qué decir</div>
+    <ul>
+      <li>"Cuando todos eligieron, dan vuelta las cartas al mismo tiempo."</li>
+      <li>"Y arranca la discusión: cada uno justifica por qué eligió esa carta, sospecha, se defiende."</li>
+    </ul>
+  </div>
+
+  <div class="slide-block">
+    <div class="slide-head">
+      <div class="slide-num">Slide 13</div>
+      <div class="slide-title">Paso 4 — Cuenta + decisión</div>
+      <div class="duration">~ 35 s</div>
+    </div>
+    <div class="say-label">qué decir</div>
+    <ul>
+      <li>"Acá entra la presión: el sacerdote inicia la cuenta regresiva en la app — <em>15 segundos por cada jugador en juego</em>."</li>
+      <li>"Mientras corre, escucha la discusión y decide a quién salvar."</li>
+      <li>"Si acierta: se enciende una vela con el nombre del salvado y pasamos a la siguiente semana. Si se equivoca y salva al poseído: <em>perdió la partida</em>. Al llegar a cero suena la campana."</li>
+    </ul>
+  </div>
+
+  <div class="handoff">
+    <strong>Cue de pase a Persona 5:</strong> <em>"Quedan dos detalles importantes que cambian todo el juego. [Nombre] los cuenta."</em>
+  </div>
+</section>
+
+<!-- ========= PERSONA 5 ========= -->
+<section class="persona">
+  <div class="persona-header">
+    <div class="persona-num">5</div>
+    <div class="persona-name">Persona 5</div>
+    <div class="persona-role">habilidades, ambiente y demo</div>
+  </div>
+
+  <div class="persona-intro">
+    Cerrás la presentación y abrís la demo. Tenés 6 slides, pero varias son cortas (visuales). Lo importante: terminar con energía e invitar a jugar.
+  </div>
+
+  <div class="slide-block">
+    <div class="slide-head">
+      <div class="slide-num">Slide 14</div>
+      <div class="slide-title">Estatuilla (sacerdote)</div>
+      <div class="duration">~ 25 s</div>
+    </div>
+    <div class="say-label">qué decir</div>
+    <ul>
+      <li>"El sacerdote tiene una habilidad: la <em>Estatuilla</em>. Una vez por partida, si ninguna carta lo convence, puede inclinarla en reverencia y saltear la semana sin salvar a nadie."</li>
+      <li>"Es para cuando duda demasiado. Postergar es mejor que arriesgar."</li>
+    </ul>
+  </div>
+
+  <div class="slide-block">
+    <div class="slide-head">
+      <div class="slide-num">Slide 15</div>
+      <div class="slide-title">Persignarse (poseído)</div>
+      <div class="duration">~ 30 s</div>
+    </div>
+    <div class="say-label">qué decir</div>
+    <ul>
+      <li>"El poseído también tiene su habilidad: <em>Persignarse</em>. La que vimos en el paso 1."</li>
+      <li>"Lo importante: como todos los jugadores tienen Comulgar y solo el poseído ve además Persignarse — pero hacen los mismos pasos — la habilidad es <em>indetectable</em> mirando desde afuera."</li>
+      <li>"Solo el comportamiento del poseído lo puede delatar — si de pronto sabe demasiado."</li>
+    </ul>
+  </div>
+
+  <div class="slide-block">
+    <div class="slide-head">
+      <div class="slide-num">Slide 16</div>
+      <div class="slide-title">Ambiente del aula</div>
+      <div class="duration">~ 25 s</div>
+    </div>
+    <div class="say-label">qué decir</div>
+    <ul>
+      <li>"Para que esto funcione necesitamos atmósfera. Por eso apagamos las luces, prendimos la vela, y hay sonido de lluvia de fondo."</li>
+      <li>"El silencio antes de cada palabra es parte del juego. Es mitad mecánica, mitad atmósfera."</li>
+    </ul>
+  </div>
+
+  <div class="slide-block">
+    <div class="slide-head">
+      <div class="slide-num">Slide 17</div>
+      <div class="slide-title">Elementos necesarios</div>
+      <div class="duration">~ 15 s</div>
+    </div>
+    <div class="say-label">qué decir</div>
+    <ul>
+      <li>"Para jugar: un celular con la app, el mazo de 64 cartas físicas, una vela, parlante con la lluvia. Eso es todo."</li>
+    </ul>
+  </div>
+
+  <div class="slide-block">
+    <div class="slide-head">
+      <div class="slide-num">Slide 18</div>
+      <div class="slide-title">QR para jugar</div>
+      <div class="duration">~ 15 s</div>
+    </div>
+    <div class="say-label">qué decir</div>
+    <ul>
+      <li>"La app está acá. Pueden escanear el QR — funciona desde cualquier celular y maneja roles, palabras, temporizador y puntajes."</li>
+      <li>(Dejá la slide unos segundos para que el curso pueda escanear si quiere.)</li>
+    </ul>
+  </div>
+
+  <div class="slide-block">
+    <div class="slide-head">
+      <div class="slide-num">Slide 19</div>
+      <div class="slide-title">A jugar</div>
+      <div class="duration">~ 20 s</div>
+    </div>
+    <div class="say-label">qué decir</div>
+    <ul>
+      <li>"Y ahora — vamos a jugar una partida acá."</li>
+      <li>"Necesitamos 5 voluntarios. Sentamos a los 5 en círculo cerrado en el centro, el resto queda alrededor mirando."</li>
+      <li>"Repartimos el mazo, abrimos la app, prendemos el reloj — y ven cómo el sacerdote tiene que decidir bajo presión."</li>
+    </ul>
+  </div>
+
+  <div class="handoff">
+    <strong>Transición a la demo:</strong> el equipo entero se ocupa del setup: uno reparte cartas, otro pasa el celular, otro modera el tiempo. El sacerdote del aula debería ser alguien externo al grupo (más interesante).
+  </div>
+</section>
+
+<!-- ========= DEMO EN VIVO ========= -->
+<div class="demo">
+  <h2>La demo en clase · ~ 10 minutos</h2>
+
+  <h3>Setup del aula (1–2 min)</h3>
+  <ul>
+    <li>5 sillas en círculo cerrado al frente, el resto del curso alrededor.</li>
+    <li>Una mesa en el centro con la vela encendida y el mazo de 64 cartas.</li>
+    <li>Las luces apagadas o lo más bajas posible. Sonido de lluvia desde un parlante.</li>
+    <li>Un celular abierto en la app, listo para que pase de mano en mano.</li>
+  </ul>
+
+  <h3>Elegir voluntarios (1 min)</h3>
+  <ul>
+    <li>Pedimos 5 voluntarios del curso. Cargamos sus nombres en la app. La app reparte los roles en secreto.</li>
+  </ul>
+
+  <h3>Jugar 1 o 2 semanas (6–8 min)</h3>
+  <ul>
+    <li>El equipo modera: uno reparte cartas, otro asegura que el celular se pase sin que nadie mire de costado.</li>
+    <li>Si la demo va corta de tiempo: alcanza con 1 semana completa para mostrar el flujo. Si sobra: jugamos hasta el primer resultado.</li>
+  </ul>
+
+  <h3>Cierre (30 s)</h3>
+  <ul>
+    <li>Agradecer a los voluntarios. Repetir la URL para los que quieran jugar después.</li>
+    <li>Pueden mostrar también las cartas físicas y el packaging para que circulen entre el curso.</li>
+  </ul>
+</div>
+
+<!-- ========= TIPS FINALES ========= -->
+<div class="tips">
+  <h2>Tips para todos</h2>
+  <ul>
+    <li><strong>Ensayar una vez en voz alta</strong> el miércoles, aunque sea sin público — para que el ritmo entre personas sea fluido.</li>
+    <li><strong>No leer del guion en vivo</strong>: usalo solo como referencia mental. Las frases entre comillas son sugerencias, no script.</li>
+    <li><strong>Pausas estratégicas</strong>: dejar 1 segundo en silencio después de revelar algo importante (el cuadro de Rembrandt, las dos palabras) — la slide queda visible y la idea se asienta.</li>
+    <li><strong>Si se cae internet</strong>: la app sigue funcionando offline. El QR no será escaneable pero la demo sí.</li>
+    <li><strong>Si alguien del público pregunta</strong>: la persona que acaba de presentar responde, las demás callan. No se solapen.</li>
+    <li><strong>Volumen y proyección</strong>: el aula es grande y vamos a hablar con las luces apagadas — proyectá la voz más de lo que sentís natural.</li>
+  </ul>
+</div>
+
+</div>
+</body>
+</html>

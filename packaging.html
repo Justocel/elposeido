@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>El Poseído — Packaging imprimible</title>
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Cinzel:wght@400;500;600&family=Cinzel+Decorative&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #2a201a;
+    font-family: 'Cinzel', serif;
+    color: #e8d5b0;
+    padding: 30px 0;
+  }
+
+  /* Guía en pantalla, oculta al imprimir */
+  .guide {
+    text-align: center; color: #c8a96e; opacity: 0.85;
+    font-size: 13px; max-width: 640px;
+    margin: 0 auto 28px; padding: 0 20px;
+    font-family: 'IM Fell English', serif; font-style: italic;
+    line-height: 1.7;
+  }
+  .guide strong { color: #e8d5b0; font-style: normal; letter-spacing: 1px; }
+
+  /* Hoja A4 */
+  .sheet {
+    width: 210mm; min-height: 297mm; margin: 0 auto 20mm;
+    background: #1e1208;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+    padding: 16mm;
+    page-break-after: always;
+    display: flex; flex-direction: column;
+  }
+
+  /* Marco de cada cara */
+  .cover {
+    width: 100%; flex: 1;
+    border: 2px dashed #5a4530;
+    padding: 14mm 12mm;
+    background: radial-gradient(ellipse at 50% 25%, #3a2a1a 0%, #1e1208 70%);
+    position: relative;
+  }
+  .cover::before {
+    content: ''; position: absolute; inset: 6mm;
+    border: 0.5px solid #c8a96e22;
+    pointer-events: none;
+  }
+
+  /* ===== TAPA ===== */
+  .cover.front {
+    display: flex; flex-direction: column;
+    justify-content: space-between;
+    text-align: center;
+  }
+  .ornament-row {
+    font-family: 'Cinzel Decorative', serif;
+    color: #c8a96e44; font-size: 14px;
+    letter-spacing: 10px;
+    margin: 3mm 0;
+  }
+  .title-main {
+    font-family: 'UnifrakturMaguntia', cursive;
+    color: #c8a96e;
+    font-size: 88px;
+    letter-spacing: 3px;
+    line-height: 0.95;
+  }
+  .divider {
+    width: 55%; height: 0.5px;
+    background: linear-gradient(to right, transparent, #c8a96e, transparent);
+    margin: 6mm auto;
+  }
+  .tagline-cover {
+    font-family: 'IM Fell English', serif; font-style: italic;
+    color: #c8a96e;
+    font-size: 17px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    line-height: 1.6;
+  }
+  .meta-info {
+    font-family: 'Cinzel', serif;
+    color: #8a7355;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    line-height: 2;
+    margin: 3mm 0;
+  }
+
+  /* QR */
+  .qr-block {
+    display: flex; flex-direction: column; align-items: center;
+    margin: 4mm 0;
+  }
+  .qr-frame {
+    background: #f0ddb0;
+    padding: 3.5mm;
+    border: 1.5px solid #c8a96e;
+    box-shadow: 0 0 0 1px #5a4530;
+  }
+  .qr-frame img {
+    display: block; width: 38mm; height: 38mm;
+  }
+  .qr-label {
+    margin-top: 3mm;
+    font-family: 'IM Fell English', serif;
+    color: #8a7355; font-size: 10px;
+    letter-spacing: 3px; text-transform: uppercase;
+    font-style: italic;
+  }
+
+  .credits-block {
+    font-family: 'IM Fell English', serif;
+    color: #6b5440;
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    line-height: 1.9;
+    margin-top: 3mm;
+  }
+
+  /* ===== CONTRATAPA ===== */
+  .cover.back {
+    display: flex; flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 18mm 16mm;
+  }
+  .story {
+    font-family: 'IM Fell English', serif;
+    color: #d4be8a;
+    font-size: 15px;
+    font-style: italic;
+    line-height: 1.95;
+    max-width: 85%;
+    margin: 4mm 0;
+  }
+  .story em { color: #f0ddb0; font-style: italic; font-weight: 500; }
+  .quote-block {
+    margin: 9mm auto 7mm;
+    padding: 7mm 8mm;
+    border-top: 0.5px solid #c8a96e55;
+    border-bottom: 0.5px solid #c8a96e55;
+    max-width: 78%;
+  }
+  .quote-block p {
+    font-family: 'UnifrakturMaguntia', cursive;
+    color: #c8a96e;
+    font-size: 24px;
+    line-height: 1.35;
+    letter-spacing: 1px;
+  }
+  .inspired {
+    margin-top: 6mm;
+    font-family: 'IM Fell English', serif;
+    color: #6b5440;
+    font-size: 10px;
+    letter-spacing: 2px;
+    line-height: 1.8;
+    font-style: italic;
+  }
+  .inspired em { color: #8a7355; }
+
+  @media print {
+    body { background: white; padding: 0; margin: 0; }
+    .guide { display: none; }
+    .sheet { box-shadow: none; margin: 0; padding: 12mm; }
+    @page { size: A4; margin: 0; }
+    .cover { border-color: #5a4530; }
+  }
+</style>
+</head>
+<body>
+
+<div class="guide">
+  <strong>Cómo imprimir.</strong> A4 portrait, color, sin escalar (al 100 %). Cada hoja contiene una cara: la primera es la <strong>tapa</strong> (frente del sobre/caja), la segunda la <strong>contratapa</strong> (dorso).<br>
+  Cortá por el borde punteado y pegá en el sobre kraft o caja que uses para guardar el mazo.
+</div>
+
+<!-- ============ HOJA 1: TAPA ============ -->
+<div class="sheet">
+  <div class="cover front">
+
+    <div>
+      <div class="ornament-row">✦ ✦ ✦</div>
+      <h1 class="title-main">El<br>Poseído</h1>
+    </div>
+
+    <div>
+      <div class="divider"></div>
+      <p class="tagline-cover">un juego de<br>empatía e intuición</p>
+      <div class="divider"></div>
+      <p class="meta-info">
+        64 cartas · 4 a 8 jugadores<br>
+        ≈ 25 minutos por partida
+      </p>
+    </div>
+
+    <div class="qr-block">
+      <div class="qr-frame">
+        <img alt="QR para jugar"
+             src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=https%3A%2F%2Fjustocel.github.io%2Felposeido%2F&color=2a1f14&bgcolor=f0ddb0&margin=4">
+      </div>
+      <div class="qr-label">escaneá para jugar</div>
+    </div>
+
+    <div>
+      <div class="ornament-row">✦ ✦ ✦</div>
+      <p class="credits-block">
+        Grupo · Un sueño<br>
+        Creatividad · ITBA · 2026
+      </p>
+    </div>
+
+  </div>
+</div>
+
+<!-- ============ HOJA 2: CONTRATAPA ============ -->
+<div class="sheet">
+  <div class="cover back">
+
+    <div class="ornament-row">✦</div>
+
+    <p class="story">
+      Quedan <em>dos meses</em> antes de que el sacerdote tenga que irse del pueblo. Antes de partir, debe purgar a un <em>poseído</em> que se esconde entre los enfermos terminales del hospicio.
+    </p>
+
+    <p class="story">
+      Afuera llueve. El sacerdote no puede leer mentes — pero sabe una cosa: el poseído carece de <em>empatía</em>. Solo su inteligencia podrá leer la grieta en sus palabras antes de que se le acabe el tiempo.
+    </p>
+
+    <div class="quote-block">
+      <p>Eligen una palabra,<br>uno la traiciona.</p>
+    </div>
+
+    <p class="inspired">
+      Inspirado en<br>
+      Rembrandt — <em>La lección de anatomía del Dr. Tulp</em> (1632)<br>
+      Salvador Dalí — <em>Reminiscencia arqueológica del Ángelus de Millet</em> (1935)
+    </p>
+
+    <div class="ornament-row">✦</div>
+
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mapa conceptual — El Poseído</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Caveat:wght@400;600&family=Permanent+Marker&display=swap');
+
+  :root {
+    --bg: #f5f1ea;
+    --ink: #2a2420;
+    --accent: #8b1e1e;
+    --muted: #6b5d52;
+    --line: #d4c9b8;
+    --gold: #b08a3c;
+    --green: #4a6b3a;
+    --postit-yellow: #fff5a8;
+    --postit-pink: #ffd0e0;
+    --postit-white: #ffffff;
+    --tape: rgba(180,180,170,0.55);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Cormorant Garamond", Georgia, serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  .wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 28px 32px 60px;
+  }
+
+  /* ===== Encabezado ===== */
+  header {
+    text-align: center;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 18px;
+    margin-bottom: 22px;
+  }
+  header h1 {
+    font-family: "Cinzel", Georgia, serif;
+    font-size: 2.2rem;
+    color: var(--accent);
+    margin: 0 0 4px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  header .sub {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 1.05rem;
+    margin-bottom: 6px;
+  }
+  header .team {
+    color: var(--gold);
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-family: "Cinzel", serif;
+  }
+  .intro-note {
+    max-width: 880px;
+    margin: 0 auto 24px;
+    text-align: center;
+    font-style: italic;
+    color: var(--muted);
+    font-size: 1rem;
+  }
+
+  /* ===== Grilla del mapa ===== */
+  .map {
+    display: grid;
+    grid-template-columns: 1fr 1.25fr 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 26px;
+  }
+  .cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* ===== Post-it ===== */
+  .postit {
+    position: relative;
+    background: var(--postit-yellow);
+    padding: 22px 26px 24px;
+    min-width: 170px;
+    max-width: 230px;
+    text-align: center;
+    font-family: "Permanent Marker", "Caveat", cursive;
+    font-weight: 400;
+    color: #2a1f17;
+    box-shadow:
+      2px 4px 10px rgba(0,0,0,0.16),
+      0 1px 0 rgba(0,0,0,0.04) inset;
+    transform: rotate(var(--rot, -2deg));
+    font-size: 1.45rem;
+    letter-spacing: 1.5px;
+    line-height: 1.15;
+    text-transform: uppercase;
+  }
+  .postit.pink { background: var(--postit-pink); }
+  .postit.white { background: var(--postit-white); }
+  .postit::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%) rotate(var(--tape-rot, 2deg));
+    width: 80px; height: 18px;
+    background: var(--tape);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+  }
+  .postit.handwritten {
+    font-family: "Caveat", cursive;
+    font-size: 1.85rem;
+    letter-spacing: 0.5px;
+    text-transform: none;
+  }
+
+  /* ===== Cuadro / pintura ===== */
+  .painting {
+    position: relative;
+    background: #fff;
+    padding: 8px 8px 10px;
+    box-shadow: 2px 5px 14px rgba(0,0,0,0.22);
+    transform: rotate(var(--rot, 1.5deg));
+    width: 100%;
+    max-width: 250px;
+  }
+  .painting::before {
+    content: '';
+    position: absolute;
+    top: -12px; left: 50%;
+    transform: translateX(-50%) rotate(var(--tape-rot, -3deg));
+    width: 90px; height: 20px;
+    background: var(--tape);
+  }
+  .painting img {
+    width: 100%;
+    display: block;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+  }
+  .painting .placeholder {
+    width: 100%;
+    aspect-ratio: 4/3;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    color: var(--muted);
+    font-style: italic;
+    font-size: 0.85rem;
+    padding: 10px;
+    background:
+      linear-gradient(135deg, #f4d77a 0%, #d97a17 40%, #6b3a0e 100%);
+    color: rgba(255,255,255,0.85);
+  }
+  .painting .cap {
+    margin-top: 8px;
+    font-family: "Cormorant Garamond", serif;
+    font-style: italic;
+    font-size: 0.78rem;
+    text-align: center;
+    color: #555;
+    line-height: 1.3;
+  }
+
+  /* ===== Flecha y "se convirtió en" ===== */
+  .arrow {
+    color: var(--accent);
+    font-size: 1.6rem;
+    line-height: 1;
+    font-family: "Cinzel", serif;
+  }
+  .became {
+    background: rgba(255,255,255,0.65);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    color: var(--ink);
+    text-align: center;
+    max-width: 260px;
+    line-height: 1.4;
+  }
+  .became strong { color: var(--accent); }
+
+  /* ===== Centro: el juego ===== */
+  .center-cell {
+    grid-column: 2;
+    grid-row: 2;
+    background: linear-gradient(180deg, #faf4e3, #fff);
+    border: 1.5px solid var(--gold);
+    border-radius: 10px;
+    padding: 26px 24px;
+    text-align: center;
+    box-shadow:
+      0 6px 24px rgba(40,30,20,0.12),
+      inset 0 0 30px rgba(176,138,60,0.07);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    align-self: center;
+  }
+  .center-cell .ornament {
+    color: var(--gold); letter-spacing: 8px; font-size: 0.75rem;
+    opacity: 0.7;
+  }
+  .center-cell h2 {
+    font-family: "Cinzel", serif;
+    color: var(--accent);
+    font-size: 2rem;
+    margin: 0;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .center-cell .tag {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 0.95rem;
+  }
+  .center-cell .desc {
+    margin-top: 6px;
+    font-size: 0.88rem;
+    color: var(--ink);
+    line-height: 1.5;
+    max-width: 260px;
+  }
+
+  /* ===== Pareja de post-its (Comparación + Falta de empatía) ===== */
+  .pair {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+  }
+  .pair .pair-arrow {
+    color: var(--accent);
+    font-size: 1rem; font-style: italic;
+    margin: 2px 0;
+  }
+
+  /* ===== Pie ===== */
+  footer {
+    text-align: center;
+    margin-top: 36px;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-style: italic;
+  }
+  footer .excluded {
+    display: inline-block;
+    background: var(--postit-pink);
+    padding: 4px 10px;
+    font-family: "Caveat", cursive;
+    font-size: 1.05rem;
+    font-style: normal;
+    transform: rotate(-2deg);
+    color: #6b2640;
+    margin: 0 6px;
+  }
+
+  /* ===== Print ===== */
+  @media print {
+    body { background: white; }
+    .wrap { padding: 14px 18px 24px; max-width: 100%; }
+    header { margin-bottom: 14px; padding-bottom: 12px; }
+    header h1 { font-size: 1.9rem; }
+    .intro-note { margin-bottom: 14px; font-size: 0.95rem; }
+    .map { gap: 18px; }
+    .center-cell h2 { font-size: 1.7rem; }
+    .postit { font-size: 1.25rem; padding: 18px 22px; }
+    .painting { max-width: 220px; }
+    .became { font-size: 0.88rem; padding: 8px 12px; }
+    .cell { gap: 6px; }
+    @page { size: A4 landscape; margin: 10mm; }
+  }
+
+  @media (max-width: 800px) {
+    .map { grid-template-columns: 1fr; gap: 20px; }
+    .center-cell { grid-column: 1; grid-row: auto; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="team">Grupo · Un sueño</div>
+  <h1>Mapa conceptual</h1>
+  <div class="sub">de los post-its del TP a la jugabilidad de <em>El Poseído</em></div>
+</header>
+
+<div class="intro-note">
+  Cada papelito y cada cuadro que nos tocó al inicio del TP se convirtió en un elemento concreto del juego — un rol, una mecánica, una imagen, una mecánica de tiempo. Esto es lo que devino cada uno.
+</div>
+
+<div class="map">
+
+  <!-- ===== Fila 1 ===== -->
+
+  <!-- Sacerdote -->
+  <div class="cell">
+    <div class="postit" style="--rot:-3deg; --tape-rot:5deg;">Sacerdote</div>
+    <div class="arrow">↓</div>
+    <div class="became">
+      <strong>Rol del juez.</strong> El único jugador que decide cada semana a quién salvar — y, a fin de cuentas, si ganan los enfermos o el poseído.
+    </div>
+  </div>
+
+  <!-- Enfermedad terminal -->
+  <div class="cell">
+    <div class="postit pink" style="--rot:2deg; --tape-rot:-4deg;">Enfermedad terminal</div>
+    <div class="arrow">↓</div>
+    <div class="became">
+      <strong>Rol grupal.</strong> Casi todos los jugadores son enfermos terminales. La premisa del hospicio justifica la urgencia: el sacerdote debe salvarlos antes de irse.
+    </div>
+  </div>
+
+  <!-- Lluvia -->
+  <div class="cell">
+    <div class="postit handwritten" style="--rot:-2deg; --tape-rot:3deg;">lluvia</div>
+    <div class="arrow">↓</div>
+    <div class="became">
+      <strong>Ambientación.</strong> En la pantalla de inicio cae una lluvia animada de fondo. Refuerza la atmósfera de encierro y reúne a todos alrededor de la mesa.
+    </div>
+  </div>
+
+  <!-- ===== Fila 2 ===== -->
+
+  <!-- Rembrandt -->
+  <div class="cell">
+    <div class="painting" style="--rot:-2deg;">
+      <img alt="Rembrandt — La lección de anatomía del Dr. Tulp (1632)" src="rembrandt.webp">
+      <div class="cap">Rembrandt — <em>La lección de anatomía del Dr. Tulp</em> (1632)</div>
+    </div>
+    <div class="arrow">↓</div>
+    <div class="became">
+      <strong>Composición visual.</strong> La escena del cuadro — un cuerpo en el centro, hombres alrededor escrutando — es la forma de jugar: jugadores en círculo, todos mirando al enfermo en cuestión.
+    </div>
+  </div>
+
+  <!-- Centro: el juego -->
+  <div class="center-cell">
+    <div class="ornament">✦ ✦ ✦</div>
+    <h2>El Poseído</h2>
+    <div class="tag">un juego de empatía e intuición</div>
+    <div class="desc">
+      Entre los enfermos terminales del hospicio se esconde un poseído. El sacerdote tiene <em>dos meses</em> para purgar al impostor sin caer en su trampa.
+    </div>
+    <div class="ornament">✦ ✦ ✦</div>
+  </div>
+
+  <!-- Dalí -->
+  <div class="cell">
+    <div class="painting" style="--rot:3deg;">
+      <img alt="Salvador Dalí — Reminiscencia arqueológica del Ángelus de Millet (1935)" src="dali.webp">
+      <div class="cap">Salvador Dalí — <em>Reminiscencia arqueológica del Ángelus de Millet</em> (1935)</div>
+    </div>
+    <div class="arrow">↓</div>
+    <div class="became">
+      <strong>La Estatuilla.</strong> La figura inclinada del cuadro se transformó en una habilidad del sacerdote: usar la estatuilla en reverencia para saltear una semana sin decidir.
+    </div>
+  </div>
+
+  <!-- ===== Fila 3 ===== -->
+
+  <!-- Inteligencia -->
+  <div class="cell">
+    <div class="postit handwritten" style="--rot:-3deg; --tape-rot:6deg;">inteligencia</div>
+    <div class="arrow">↓</div>
+    <div class="became">
+      <strong>Arma del sacerdote.</strong> No tiene cartas ni habla durante la discusión: solo su inteligencia para leer las palabras de los demás lo separa de la derrota.
+    </div>
+  </div>
+
+  <!-- Comparación + Falta de empatía: la mecánica central, en pareja -->
+  <div class="cell">
+    <div class="pair">
+      <div class="postit handwritten" style="--rot:2deg; --tape-rot:-5deg;">comparación</div>
+      <div class="pair-arrow">busca →</div>
+      <div class="postit handwritten pink" style="--rot:-2deg; --tape-rot:4deg;">falta de empatía</div>
+    </div>
+    <div class="arrow">↓</div>
+    <div class="became">
+      <strong>Mecánica central del bluff.</strong> El sacerdote <em>compara</em> las cartas y las justificaciones de los enfermos. Lo que delata al poseído no es lo que dice, sino la <em>falta de empatía</em> en lo que dice.
+    </div>
+  </div>
+
+  <!-- 2 meses para irme -->
+  <div class="cell">
+    <div class="postit pink handwritten" style="--rot:3deg; --tape-rot:-3deg;">quedan 2 meses para irme</div>
+    <div class="arrow">↓</div>
+    <div class="became">
+      <strong>Presión del tiempo.</strong> La partida se mide en <em>semanas</em> (no rondas). El sacerdote tiene un cupo de semanas para salvar a todos los enfermos antes de partir.
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  El post-it <span class="excluded">un sueño</span> es el nombre de nuestro equipo y se dejó fuera de la integración. Los <strong>9 conceptos restantes</strong> (7 post-its + 2 cuadros) están todos en la jugabilidad.
+  <br><br>
+  Para una vista interactiva de la mecánica → <a href="index.html" style="color:var(--accent); text-decoration:none;">index.html</a> · reglamento completo → <a href="reglas.html" style="color:var(--accent); text-decoration:none;">reglas.html</a>
+</footer>
+
+</div>
+</body>
+</html>

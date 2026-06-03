@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>El Poseído — Reglas cortas</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #f5f1ea; --ink: #2a2420; --accent: #8b1e1e;
+    --muted: #6b5d52; --line: #d4c9b8; --gold: #b08a3c;
+    --green: #4a6b3a;
+  }
+  html, body {
+    background: var(--bg); color: var(--ink);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 10.5pt;
+    line-height: 1.4;
+  }
+  body { padding: 14mm 16mm 12mm; }
+
+  /* ===== Encabezado ===== */
+  header {
+    text-align: center;
+    border-bottom: 1.5px solid var(--accent);
+    padding-bottom: 5mm;
+    margin-bottom: 5mm;
+  }
+  h1.title {
+    font-family: 'Cinzel', serif;
+    color: var(--accent);
+    font-size: 28pt;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    font-weight: 600;
+    line-height: 1;
+  }
+  header .tag {
+    color: var(--muted); font-style: italic;
+    font-size: 11pt; margin: 2mm 0 1mm;
+  }
+  header .team {
+    color: var(--gold);
+    font-family: 'Cinzel', serif;
+    font-size: 8pt; letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  h2 {
+    font-family: 'Cinzel', serif;
+    color: var(--accent);
+    font-size: 11pt;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin: 4mm 0 2mm;
+    border-bottom: 0.5px solid var(--line);
+    padding-bottom: 1mm;
+  }
+
+  /* ===== Setup ===== */
+  .setup {
+    background: white;
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--gold);
+    border-radius: 3px;
+    padding: 3mm 4mm;
+    font-size: 10pt;
+    margin-bottom: 2mm;
+  }
+  .setup strong { color: var(--accent); }
+
+  /* ===== Roles ===== */
+  .roles {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 3mm;
+  }
+  .role {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 3mm;
+  }
+  .role.priest { border-top: 3px solid var(--gold); }
+  .role.sick { border-top: 3px solid var(--green); }
+  .role.possessed { border-top: 3px solid var(--accent); }
+  .role .lbl {
+    font-size: 7pt; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 0.5mm;
+  }
+  .role .nm {
+    font-family: 'Cinzel', serif;
+    font-size: 11pt; letter-spacing: 1.8px;
+    text-transform: uppercase; font-weight: 600;
+    line-height: 1; margin-bottom: 2mm;
+  }
+  .role.priest .nm { color: var(--gold); }
+  .role.sick .nm { color: var(--green); }
+  .role.possessed .nm { color: var(--accent); }
+  .role .desc { font-size: 9pt; line-height: 1.35; }
+  .role .desc em { color: var(--accent); font-style: italic; }
+
+  /* ===== Pasos ===== */
+  .steps {
+    counter-reset: stp;
+    list-style: none;
+  }
+  .steps li {
+    counter-increment: stp;
+    position: relative;
+    padding-left: 9mm;
+    margin: 2mm 0;
+    font-size: 9.5pt; line-height: 1.4;
+  }
+  .steps li::before {
+    content: counter(stp);
+    position: absolute; left: 0; top: -0.3mm;
+    width: 6mm; height: 6mm;
+    background: var(--accent); color: white;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cinzel', serif; font-size: 8pt; font-weight: 600;
+  }
+  .steps li strong { color: var(--accent); }
+  .steps li em { color: var(--accent); font-style: italic; }
+
+  /* ===== Gana ===== */
+  .wins {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 3mm;
+  }
+  .win {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 3mm 4mm;
+    font-size: 9pt; line-height: 1.4;
+  }
+  .win.priest { border-left: 3px solid var(--gold); }
+  .win.possessed { border-left: 3px solid var(--accent); }
+  .win .who {
+    font-family: 'Cinzel', serif;
+    font-size: 9pt; letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 1mm; font-weight: 600;
+  }
+  .win.priest .who { color: var(--gold); }
+  .win.possessed .who { color: var(--accent); }
+
+  /* ===== Habilidades ===== */
+  .abilities {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 3mm;
+  }
+  .ability {
+    background: #faf4e3;
+    border: 1px solid var(--gold);
+    border-radius: 4px;
+    padding: 3mm 4mm;
+    font-size: 9pt; line-height: 1.4;
+  }
+  .ability.possessed {
+    background: #f3eee6; border-color: var(--accent);
+  }
+  .ability .who {
+    font-size: 7pt; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 0.5mm;
+  }
+  .ability .nm {
+    font-family: 'Cinzel', serif;
+    font-size: 11pt; letter-spacing: 2px;
+    text-transform: uppercase; font-weight: 600;
+    color: var(--gold);
+    margin-bottom: 1.5mm; line-height: 1;
+  }
+  .ability.possessed .nm { color: var(--accent); }
+  .ability em { color: var(--accent); font-style: italic; }
+
+  /* ===== Footer / QR ===== */
+  footer {
+    margin-top: 6mm; padding-top: 4mm;
+    border-top: 1px solid var(--line);
+    display: flex; align-items: center; gap: 6mm;
+  }
+  footer .qr {
+    background: white; padding: 1mm;
+    border: 1px solid var(--gold);
+    flex-shrink: 0;
+  }
+  footer .qr img { width: 22mm; height: 22mm; display: block; }
+  footer .info { flex: 1; font-size: 9pt; line-height: 1.45; }
+  footer .info .url {
+    font-family: 'Cinzel', serif;
+    color: var(--accent);
+    font-size: 10pt; letter-spacing: 1px;
+    margin-bottom: 1mm;
+  }
+  footer .info em { color: var(--accent); font-style: italic; }
+
+  @media print {
+    body { padding: 12mm 14mm; }
+    @page { size: A4; margin: 0; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1 class="title">El Poseído</h1>
+  <div class="tag">un juego de empatía e intuición</div>
+  <div class="team">Grupo · Un sueño · Creatividad ITBA</div>
+</header>
+
+<div class="setup">
+  <strong>Setup.</strong> 4 a 8 jugadores. Un celular con la app (escaneá el QR abajo) y este mazo de 64 cartas. Una mesa, sillas en círculo, una vela en el centro y silencio durante el reveal.
+</div>
+
+<h2>Los tres roles</h2>
+<div class="roles">
+  <div class="role priest">
+    <div class="lbl">1 jugador</div>
+    <div class="nm">Sacerdote</div>
+    <div class="desc">Decide a quién salvar cada semana. No toma cartas. Escucha en silencio. Ve la palabra real.</div>
+  </div>
+  <div class="role sick">
+    <div class="lbl">2 a 6 jugadores</div>
+    <div class="nm">Enfermo terminal</div>
+    <div class="desc">Toma 5 cartas y juega una asociada a la palabra real. Si lo salvan, queda como espectador.</div>
+  </div>
+  <div class="role possessed">
+    <div class="lbl">1 jugador</div>
+    <div class="nm">Poseído</div>
+    <div class="desc">Ve una palabra <em>vecina</em>, no la real. Finge empatía con una palabra que no conoce. Gana si lo salvan.</div>
+  </div>
+</div>
+
+<h2>Una semana</h2>
+<ol class="steps">
+  <li><strong>Reveal privado.</strong> La app pasa de mano en mano. Cada uno ve su rol y aprieta <em>Comulgar</em> para ver la palabra.</li>
+  <li><strong>Cartas en secreto.</strong> Cada enfermo (y el poseído) toma 5 cartas del mazo y elige una asociada con su palabra.</li>
+  <li><strong>Revelación simultánea.</strong> Dan vuelta sus cartas al mismo tiempo. Empieza la discusión: justifican, sospechan, se defienden.</li>
+  <li><strong>Cuenta + decisión.</strong> El sacerdote inicia la cuenta (15 s × jugador en juego) y elige a quién salvar antes de la campana.</li>
+</ol>
+
+<h2>Cómo gana cada bando</h2>
+<div class="wins">
+  <div class="win priest">
+    <div class="who">Sacerdote + enfermos</div>
+    Ganan si el sacerdote salva a <em>todos</em> los enfermos sin caer en la trampa del poseído.
+  </div>
+  <div class="win possessed">
+    <div class="who">Poseído</div>
+    Gana si el sacerdote lo salva en <em>cualquier</em> semana de la partida. Una sola vez basta.
+  </div>
+</div>
+
+<h2>Habilidades secretas <span style="font-family:'Cormorant Garamond',serif; font-size:8pt; letter-spacing:1px; text-transform:none; color:var(--muted); font-style:italic;">· una vez por partida</span></h2>
+<div class="abilities">
+  <div class="ability">
+    <div class="who">Sacerdote</div>
+    <div class="nm">Estatuilla</div>
+    Si ninguna carta lo convence, inclina la estatuilla en reverencia y <em>saltea esa semana</em> sin salvar a nadie.
+  </div>
+  <div class="ability possessed">
+    <div class="who">Poseído</div>
+    <div class="nm">Persignarse</div>
+    En vez de Comulgar, el poseído puede <em>persignarse</em>: ve la palabra real de sus hermanos. Indetectable.
+  </div>
+</div>
+
+<footer>
+  <div class="qr">
+    <img alt="QR para jugar"
+         src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https%3A%2F%2Fjustocel.github.io%2Felposeido%2F&color=8b1e1e&bgcolor=f5f1ea&margin=4">
+  </div>
+  <div class="info">
+    <div class="url">justocel.github.io/elposeido</div>
+    Escaneá para jugar desde cualquier celular. La app maneja roles secretos, palabras, temporizador, campana y puntajes. Reglas completas en el sitio.
+  </div>
+</footer>
+
+</body>
+</html>
