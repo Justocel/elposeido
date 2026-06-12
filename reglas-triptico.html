@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>El Poseído — Reglas tríptico</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Cinzel+Decorative&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #f5f1ea; --ink: #2a2420; --accent: #8b1e1e;
+    --muted: #6b5d52; --line: #d4c9b8; --gold: #b08a3c;
+    --green: #4a6b3a; --card: #fff;
+    --fold: #c4b89c;
+  }
+  html, body {
+    background: #3a302a;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    color: var(--ink);
+    padding: 24px 0 60px;
+  }
+
+  /* Guía en pantalla, oculta al imprimir */
+  .guide {
+    max-width: 720px; margin: 0 auto 28px; padding: 0 24px;
+    text-align: center; color: #d4be8a;
+    font-family: 'IM Fell English', serif; font-style: italic;
+    font-size: 13.5px; line-height: 1.7;
+  }
+  .guide strong { color: #f0ddb0; font-style: normal; letter-spacing: 1px; }
+  .guide-fold {
+    display: inline-block;
+    margin-top: 8px; padding: 6px 14px;
+    background: rgba(176,138,60,0.15);
+    border: 1px solid #c8a96e44;
+    border-radius: 4px;
+    color: #c8a96e;
+    font-style: normal; letter-spacing: 1.5px;
+    font-size: 11px; text-transform: uppercase;
+  }
+
+  /* Hoja A4 landscape */
+  .page {
+    width: 297mm; height: 210mm;
+    margin: 0 auto 18mm;
+    background: var(--bg);
+    box-shadow: 0 4px 30px rgba(0,0,0,0.4);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    page-break-after: always;
+    overflow: hidden;
+  }
+
+  /* Panel base */
+  .panel {
+    padding: 12mm 10mm;
+    border-right: 1px dashed var(--fold);
+    display: flex; flex-direction: column;
+    position: relative;
+  }
+  .panel:last-child { border-right: none; }
+
+  /* Etiqueta de panel (muy sutil, ayuda al armado) */
+  .plabel {
+    position: absolute; top: 4mm; left: 0; right: 0;
+    text-align: center;
+    font-family: 'Cinzel', serif;
+    font-size: 7pt; letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--muted); opacity: 0.5;
+  }
+
+  /* ======================================== */
+  /* TAPA (front cover)                       */
+  /* ======================================== */
+  .panel.tapa {
+    background: linear-gradient(180deg, #faf4e3 0%, var(--bg) 100%);
+    text-align: center;
+    justify-content: space-between;
+    padding: 16mm 12mm 14mm;
+  }
+  .panel.tapa .ornament {
+    font-family: 'Cinzel Decorative', serif;
+    color: var(--gold); opacity: 0.55;
+    font-size: 14px; letter-spacing: 12px;
+    margin: 0;
+  }
+  .panel.tapa .title {
+    font-family: 'Cinzel', serif;
+    color: var(--accent);
+    font-size: 36pt;
+    letter-spacing: 7px;
+    text-transform: uppercase;
+    font-weight: 600;
+    line-height: 1;
+  }
+  .panel.tapa .divider {
+    width: 60%; height: 0.7px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    margin: 4mm auto;
+  }
+  .panel.tapa .tagline {
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--muted);
+    font-style: italic;
+    font-size: 13pt;
+    letter-spacing: 1px;
+    line-height: 1.4;
+  }
+  .panel.tapa .kicker {
+    font-family: 'Cinzel', serif;
+    color: var(--gold);
+    font-size: 8.5pt; letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-top: 2mm;
+  }
+  .panel.tapa .meta {
+    font-family: 'Cinzel', serif;
+    color: var(--muted);
+    font-size: 9pt; letter-spacing: 2.5px;
+    text-transform: uppercase;
+    line-height: 1.9;
+  }
+  .panel.tapa .team {
+    font-family: 'Cinzel', serif;
+    color: var(--gold);
+    font-size: 8pt; letter-spacing: 3px;
+    text-transform: uppercase;
+    line-height: 1.7;
+  }
+  .panel.tapa .team .small {
+    color: var(--muted); font-size: 7.5pt; letter-spacing: 2px;
+  }
+
+  /* ======================================== */
+  /* SOLAPA INTERIOR (inside flap)            */
+  /* ======================================== */
+  .panel.solapa {
+    padding: 14mm 10mm;
+  }
+  .panel.solapa h2 {
+    font-family: 'Cinzel', serif;
+    color: var(--accent);
+    font-size: 11pt; letter-spacing: 2.5px;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 3mm;
+    border-bottom: 0.5px solid var(--line);
+    padding-bottom: 1.5mm;
+  }
+  .panel.solapa .lead {
+    font-size: 10.5pt; line-height: 1.6;
+    margin-bottom: 4mm;
+  }
+  .panel.solapa .lead em { color: var(--accent); font-style: italic; }
+  .panel.solapa .quote {
+    background: #faf4e3;
+    border-left: 3px solid var(--gold);
+    padding: 3mm 4mm;
+    font-style: italic;
+    color: #4a3f30;
+    font-size: 10pt; line-height: 1.4;
+    margin: 4mm 0;
+    text-align: center;
+    font-family: 'IM Fell English', serif;
+  }
+  .panel.solapa .setup {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 3mm 4mm;
+    font-size: 9.5pt; line-height: 1.45;
+    margin-top: auto;
+  }
+  .panel.solapa .setup strong { color: var(--accent); }
+
+  /* ======================================== */
+  /* CONTRATAPA (back cover)                  */
+  /* ======================================== */
+  .panel.contratapa {
+    text-align: center;
+    justify-content: center;
+    padding: 14mm 10mm;
+  }
+  .panel.contratapa h2 {
+    font-family: 'Cinzel', serif;
+    color: var(--accent);
+    font-size: 13pt; letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 4mm;
+  }
+  .panel.contratapa .qr-frame {
+    margin: 0 auto 4mm;
+    background: var(--card);
+    padding: 3mm;
+    border: 1.5px solid var(--gold);
+    width: fit-content;
+  }
+  .panel.contratapa .qr-frame img {
+    width: 38mm; height: 38mm; display: block;
+  }
+  .panel.contratapa .url {
+    font-family: 'Cinzel', serif;
+    color: var(--accent);
+    font-size: 10pt; letter-spacing: 1px;
+    margin-bottom: 4mm;
+  }
+  .panel.contratapa .blurb {
+    font-size: 9.5pt; line-height: 1.45;
+    color: var(--ink);
+    font-style: italic;
+    max-width: 80%; margin: 0 auto 6mm;
+  }
+  .panel.contratapa .credits {
+    font-family: 'Cinzel', serif;
+    color: var(--gold);
+    font-size: 8pt; letter-spacing: 2.5px;
+    text-transform: uppercase;
+    line-height: 1.9;
+    margin-top: auto;
+  }
+  .panel.contratapa .credits .small {
+    color: var(--muted); font-size: 7.5pt; letter-spacing: 2px;
+    margin-top: 2mm; display: block;
+  }
+  .panel.contratapa .inspired {
+    margin-top: 3mm;
+    font-family: 'IM Fell English', serif;
+    color: var(--muted);
+    font-size: 8pt; font-style: italic;
+    letter-spacing: 1px; line-height: 1.6;
+  }
+
+  /* ======================================== */
+  /* INSIDE — base                            */
+  /* ======================================== */
+  .panel.inside {
+    padding: 14mm 9mm;
+  }
+  .panel.inside h2 {
+    font-family: 'Cinzel', serif;
+    color: var(--accent);
+    font-size: 12pt; letter-spacing: 2.5px;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 3.5mm;
+    border-bottom: 1px solid var(--accent);
+    padding-bottom: 1.5mm;
+    text-align: center;
+  }
+  .panel.inside h3 {
+    font-family: 'Cinzel', serif;
+    color: var(--accent);
+    font-size: 9pt; letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin: 3mm 0 1.5mm;
+  }
+
+  /* Roles panel */
+  .panel.roles .role {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 3mm 4mm;
+    margin-bottom: 3mm;
+    font-size: 9pt; line-height: 1.4;
+  }
+  .panel.roles .role.priest { border-top: 3px solid var(--gold); }
+  .panel.roles .role.sick { border-top: 3px solid var(--green); }
+  .panel.roles .role.possessed { border-top: 3px solid var(--accent); }
+  .panel.roles .role .lbl {
+    font-size: 7pt; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 0.5mm;
+  }
+  .panel.roles .role .nm {
+    font-family: 'Cinzel', serif;
+    font-size: 11pt; letter-spacing: 1.8px;
+    text-transform: uppercase; font-weight: 600;
+    line-height: 1; margin-bottom: 1.5mm;
+  }
+  .panel.roles .role.priest .nm { color: var(--gold); }
+  .panel.roles .role.sick .nm { color: var(--green); }
+  .panel.roles .role.possessed .nm { color: var(--accent); }
+  .panel.roles .role em { color: var(--accent); font-style: italic; }
+
+  /* Semana panel */
+  .panel.semana .steps {
+    counter-reset: stp;
+    list-style: none;
+  }
+  .panel.semana .steps li {
+    counter-increment: stp;
+    position: relative;
+    padding-left: 8mm;
+    margin: 2mm 0;
+    font-size: 9pt; line-height: 1.4;
+  }
+  .panel.semana .steps li::before {
+    content: counter(stp);
+    position: absolute; left: 0; top: -0.3mm;
+    width: 5.5mm; height: 5.5mm;
+    background: var(--accent); color: white;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cinzel', serif; font-size: 7.5pt; font-weight: 600;
+  }
+  .panel.semana .steps li strong { color: var(--accent); }
+  .panel.semana .steps li em { color: var(--accent); font-style: italic; }
+  .panel.semana .palabra {
+    background: #faf4e3;
+    border: 1px solid var(--gold);
+    border-radius: 4px;
+    padding: 3mm 4mm;
+    margin-top: 3mm;
+    font-size: 8.5pt; line-height: 1.4;
+  }
+  .panel.semana .palabra .vs {
+    display: flex; align-items: center; justify-content: center;
+    gap: 4mm; margin: 1.5mm 0 1mm;
+    font-family: 'Cinzel', serif;
+    color: var(--accent);
+    font-size: 13pt; letter-spacing: 2px;
+    text-transform: uppercase; font-weight: 600;
+  }
+  .panel.semana .palabra .vs .small {
+    color: var(--muted); font-style: italic;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 9pt; letter-spacing: 0;
+    text-transform: none;
+  }
+  .panel.semana .palabra .vs .alt { color: #5a6b7a; }
+  .panel.semana .palabra .desc {
+    color: var(--muted); font-style: italic;
+    text-align: center; font-size: 8pt; line-height: 1.4;
+  }
+
+  /* Habilidades panel */
+  .panel.habil .wins,
+  .panel.habil .abilities {
+    display: grid; gap: 2.5mm;
+  }
+  .panel.habil .win {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 3mm 3.5mm;
+    font-size: 9pt; line-height: 1.4;
+  }
+  .panel.habil .win.priest { border-left: 3px solid var(--gold); }
+  .panel.habil .win.possessed { border-left: 3px solid var(--accent); }
+  .panel.habil .win .who {
+    font-family: 'Cinzel', serif;
+    font-size: 9pt; letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 1mm; font-weight: 600;
+  }
+  .panel.habil .win.priest .who { color: var(--gold); }
+  .panel.habil .win.possessed .who { color: var(--accent); }
+  .panel.habil .win em { color: var(--accent); font-style: italic; }
+
+  .panel.habil .ability {
+    background: #faf4e3;
+    border: 1px solid var(--gold);
+    border-radius: 4px;
+    padding: 3mm 3.5mm;
+    font-size: 9pt; line-height: 1.4;
+  }
+  .panel.habil .ability.possessed { background: #f3eee6; border-color: var(--accent); }
+  .panel.habil .ability .who {
+    font-size: 7pt; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 0.5mm;
+  }
+  .panel.habil .ability .nm {
+    font-family: 'Cinzel', serif;
+    font-size: 11pt; letter-spacing: 2px;
+    text-transform: uppercase; font-weight: 600;
+    color: var(--gold);
+    margin-bottom: 1.5mm; line-height: 1;
+  }
+  .panel.habil .ability.possessed .nm { color: var(--accent); }
+  .panel.habil .ability em { color: var(--accent); font-style: italic; }
+
+  /* ======================================== */
+  /* Print                                    */
+  /* ======================================== */
+  @media print {
+    html, body { background: white; padding: 0; margin: 0; }
+    .guide { display: none; }
+    .page { box-shadow: none; margin: 0; page-break-after: always; }
+    .panel { border-right: 1px dashed var(--fold); }
+    @page { size: A4 landscape; margin: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="guide">
+  <strong>Cómo imprimir y armar el tríptico.</strong><br>
+  Imprimí en A4 <strong>landscape</strong>, color, doble cara, <strong>flip por lado corto</strong> (la opción estándar para landscape).<br>
+  Cada hoja A4 = 6 paneles (3 por cara). Después doblá en 3 partes iguales.<br>
+  <span class="guide-fold">Tapa a la derecha · contratapa a la izquierda</span>
+</div>
+
+<!-- ============ HOJA 1 — AFUERA ============ -->
+<div class="page outside">
+  <!-- Panel izq: CONTRATAPA -->
+  <div class="panel contratapa">
+    <span class="plabel">Contratapa</span>
+    <h2>Jugá ahora</h2>
+    <div class="qr-frame">
+      <img alt="QR para jugar"
+           src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https%3A%2F%2Fjustocel.github.io%2Felposeido%2F&color=8b1e1e&bgcolor=f5f1ea&margin=4">
+    </div>
+    <div class="url">justocel.github.io/elposeido</div>
+    <div class="blurb">
+      Escaneá para abrir la app desde cualquier celular. Maneja roles secretos, palabras, temporizador, campana y puntajes.
+    </div>
+    <div class="credits">
+      Grupo · Un sueño
+      <span class="small">Creatividad · ITBA · 2026</span>
+      <div class="inspired">
+        Inspirado en<br>
+        Rembrandt · <em>La lección de anatomía</em> (1632)<br>
+        Dalí · <em>Reminiscencia arqueológica<br>del Ángelus de Millet</em> (1935)
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel medio: SOLAPA INTERIOR -->
+  <div class="panel solapa">
+    <span class="plabel">Solapa</span>
+    <h2>La premisa</h2>
+    <p class="lead">
+      Quedan <em>dos meses</em> antes de que el sacerdote tenga que irse del pueblo. Antes de partir, debe purgar a un <em>poseído</em> que se esconde entre los enfermos terminales del hospicio.
+    </p>
+    <p class="lead">
+      El sacerdote no puede leer mentes. Pero sabe una cosa: el poseído carece de <em>empatía</em>. Solo su inteligencia podrá leer la grieta en sus palabras antes de que se le acabe el tiempo.
+    </p>
+    <div class="quote">
+      Eligen una palabra,<br>uno la traiciona.
+    </div>
+    <div class="setup">
+      <strong>Setup.</strong> 4 a 8 jugadores. Un celular con la app (escaneá el QR) y este mazo de 64 cartas. Una mesa, sillas en círculo, una vela en el centro y silencio durante el reveal. Sonido de lluvia de fondo y luces apagadas.
+    </div>
+  </div>
+
+  <!-- Panel der: TAPA -->
+  <div class="panel tapa">
+    <span class="plabel">Tapa</span>
+    <div>
+      <p class="ornament">✦ ✦ ✦</p>
+    </div>
+    <div>
+      <h1 class="title">El<br>Poseído</h1>
+      <div class="divider"></div>
+      <p class="tagline">un juego de empatía<br>e intuición</p>
+      <p class="kicker">Reglamento</p>
+    </div>
+    <div>
+      <p class="meta">
+        64 cartas<br>
+        4 a 8 jugadores<br>
+        ≈ 25 minutos
+      </p>
+    </div>
+    <div>
+      <p class="ornament">✦ ✦ ✦</p>
+      <p class="team">
+        Grupo · Un sueño
+        <span class="small">Creatividad · ITBA</span>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ HOJA 2 — ADENTRO ============ -->
+<div class="page inside-page">
+
+  <!-- Panel 1: ROLES -->
+  <div class="panel inside roles">
+    <span class="plabel">Interior 1 · Roles</span>
+    <h2>Los tres roles</h2>
+
+    <div class="role priest">
+      <div class="lbl">1 jugador</div>
+      <div class="nm">Sacerdote</div>
+      Decide a quién salvar cada semana. No toma cartas. Escucha en silencio. Ve la palabra real.
+    </div>
+
+    <div class="role sick">
+      <div class="lbl">2 a 6 jugadores</div>
+      <div class="nm">Enfermo terminal</div>
+      Toma 5 cartas y juega una asociada a la palabra real. Si lo salvan, queda como espectador.
+    </div>
+
+    <div class="role possessed">
+      <div class="lbl">1 jugador</div>
+      <div class="nm">Poseído</div>
+      Ve una palabra <em>vecina</em>, no la real. Finge empatía con una palabra que no conoce. Gana si lo salvan.
+    </div>
+  </div>
+
+  <!-- Panel 2: UNA SEMANA -->
+  <div class="panel inside semana">
+    <span class="plabel">Interior 2 · Una semana</span>
+    <h2>Una semana</h2>
+
+    <ol class="steps">
+      <li><strong>Reveal privado.</strong> La app pasa de mano en mano. Cada uno ve su rol y aprieta <em>Comulgar</em> para ver la palabra.</li>
+      <li><strong>Cartas en secreto.</strong> Cada enfermo y el poseído toma 5 cartas y elige una asociada.</li>
+      <li><strong>Revelación simultánea.</strong> Dan vuelta las cartas a la vez. Empieza la discusión.</li>
+      <li><strong>Cuenta + decisión.</strong> El sacerdote inicia la cuenta (15 s × jugador) y elige a quién salvar antes de la campana.</li>
+    </ol>
+
+    <h3>La palabra-vecina</h3>
+    <div class="palabra">
+      <div class="vs">
+        <span>Playa</span>
+        <span class="small">vs.</span>
+        <span class="alt">Desierto</span>
+      </div>
+      <p class="desc">
+        Sacerdote y enfermos ven la palabra real. El poseído ve una palabra <em>parecida pero distinta</em>: comparten atributos (arena, calor, soledad) pero no son iguales. La grieta entre lo que el poseído dice y lo que sabe es lo que el sacerdote busca.
+      </p>
+    </div>
+  </div>
+
+  <!-- Panel 3: HABILIDADES + GANA -->
+  <div class="panel inside habil">
+    <span class="plabel">Interior 3 · Gana + Habilidades</span>
+    <h2>Cómo gana</h2>
+    <div class="wins">
+      <div class="win priest">
+        <div class="who">Sacerdote + enfermos</div>
+        Ganan si el sacerdote salva a <em>todos</em> los enfermos sin caer en la trampa del poseído.
+      </div>
+      <div class="win possessed">
+        <div class="who">Poseído</div>
+        Gana si el sacerdote lo salva en <em>cualquier</em> semana. Una sola vez basta.
+      </div>
+    </div>
+
+    <h3>Habilidades secretas · 1 vez/partida</h3>
+    <div class="abilities">
+      <div class="ability">
+        <div class="who">Sacerdote</div>
+        <div class="nm">Estatuilla</div>
+        Si ninguna carta lo convence, inclina la estatuilla en reverencia y <em>saltea esa semana</em> sin salvar.
+      </div>
+      <div class="ability possessed">
+        <div class="who">Poseído</div>
+        <div class="nm">Persignarse</div>
+        En vez de Comulgar, se persigna: ve la <em>palabra real</em> de sus hermanos. Indetectable.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
